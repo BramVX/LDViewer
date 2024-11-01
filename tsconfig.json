@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig-base.json",
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "es2020",
+    "moduleResolution": "bundler",
+    "lib": ["es2020", "dom"],
+    "useDefineForClassFields": false,
+    "experimentalDecorators": true,
+    "composite": false,
+    "allowImportingTsExtensions": true,
+    "declaration": false,
+    "strict": false,
+    "noEmit": true,
+    "noImplicitAny": false,
+    "noImplicitThis": false,
+    "noUnusedLocals": false,
+  },
+  "include": ["./src/**/*", "./webpack/*.ts", "./typings-custom/main.d.ts", "script/ldwizard-build.ts"],
+}

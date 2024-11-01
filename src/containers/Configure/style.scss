@@ -1,0 +1,84 @@
+@import "../../theme/vars.scss";
+
+button.actionButtons {
+  border-radius: unset;
+}
+div.baseIriField {
+  > div {
+    border-radius: unset;
+  }
+}
+div.globalSettingsForm {
+  margin-bottom: 1rem;
+  padding: 0 1rem;
+
+  .normalSettings {
+    margin-bottom: 1rem;
+  }
+}
+.tableWrapper {
+  margin: 1rem;
+
+  tbody > tr:last-child td {
+    border-bottom: unset;
+  }
+}
+th.tableHeader {
+  font-weight: bold;
+  &:hover {
+    background-color: #eee;
+  }
+  &.disabled {
+    cursor: default;
+    background-color: #ccc;
+  }
+  &.shaclColumn {
+    cursor: move; /* fallback if grab cursor is unsupported */
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+    background-color: #ffdec4;
+  }
+}
+.hint {
+  pointer-events: none;
+}
+.keyColumnWrapper {
+  display: flex;
+  margin-bottom: 1rem;
+  align-items: baseline;
+  .keyColumnSelector {
+    min-width: 120px;
+  }
+  .keyColumnInfo {
+    margin-left: 1rem;
+  }
+}
+.duplicateWarning {
+  padding-left: 1em;
+}
+div.tooltip :global(.MuiTooltip-tooltip) {
+  max-width: 100vw;
+}
+.indent {
+  padding-left: 0.75rem;
+  border-left: 0.25rem solid $pallette-primary;
+}
+.columnConfigSection {
+  margin-top: 1.5rem;
+  &:first-child {
+    margin-top: 0;
+  }
+}
+div.hintOverride {
+  align-items: center;
+}
+div.refinementSelector {
+  margin-bottom: 1rem;
+}
+.selector {
+  min-width: 120px;
+}
+.shaclShapeSelector {
+  width: 100%;
+}

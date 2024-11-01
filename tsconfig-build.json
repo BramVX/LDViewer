@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "useDefineForClassFields": false,
+    "experimentalDecorators": true,
+    "composite": false,
+    "allowImportingTsExtensions": true,
+    "strict": true,
+    "outDir": "./lib",
+    "removeComments": false
+  },
+  "include": ["./src/**/*", "./webpack/*.ts", "./typings-custom/main.d.ts"],
+}

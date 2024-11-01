@@ -1,0 +1,12 @@
+version: '4'
+services:
+  ldwizard:
+    image: ldwizard/nde:1.0.0
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+      args:
+        CONFIG_FILE: ./webpack/runtimeConfig.ts
+
+    ports:
+      - "4000:80"

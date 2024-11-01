@@ -1,0 +1,54 @@
+@import "../../theme/vars.scss";
+
+.image {
+  height: 70px;
+  margin-right: 2rem;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+body {
+  background: #eee;
+}
+.main {
+  flex-grow: 1;
+  margin: 2rem auto;
+}
+.footer {
+  align-items: center;
+  background-color: white;
+  display: flex;
+  flex-direction: row-reverse;
+  .footerNav {
+    margin: 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .LDWizardImg {
+    height: 5rem;
+    :global(.LDWizard_svg__primary) {
+      fill: $pallette-primary;
+    }
+    :global(.LDWizard_svg__secondary) {
+      fill: $pallette-secondary;
+    }
+  }
+}
+a {
+  color: $pallette-secondary;
+  text-decoration: none;
+  &:hover {
+    text-shadow: 1px 0 0;
+  }
+}
+main.homepage {
+  display: flex;
+  flex-grow: 1;
+  button.actionButton {
+    margin-bottom: 1rem;
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig-build.json",
+  "compilerOptions": {
+    "outDir": "./types",
+    "module": "Node16",
+    "rootDir": "./src/config",
+    "esModuleInterop": true,
+    "incremental": false,
+    "strict": false,
+    "declaration": true,
+  },
+  "files": ["./src/config/WizardConfig.ts"],
+  "include": []
+}

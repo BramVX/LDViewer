@@ -1,0 +1,32 @@
+.input {
+  display: none;
+}
+.button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+button.actionButtons {
+  border-radius: unset;
+}
+.dragDropIndicator {
+  border: 2px dashed #cccccc;
+  background-color: #f8f8f8;
+  text-align: center;
+  padding: 20px;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+.loadButton {
+  text-transform: none;
+}
+.uploadTitle {
+  text-align: center;
+  padding-top: 2rem;
+}
+.paddingTop {
+  padding-top: 1rem;
+}
+.pointer {
+  cursor: pointer;
+}
