@@ -1,9 +1,6 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { createTheme, useTheme } from '@mui/material/styles';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import DescriptionIcon from '@mui/icons-material/Description';
 import LayersIcon from '@mui/icons-material/Layers';
@@ -12,9 +9,8 @@ import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { type Router, type Navigation, PageContainerToolbar, PageContainer } from '@toolpad/core';
 import { Button, Paper } from '@mui/material';
-import { useDemoRouter } from '@toolpad/core/internals';
+import { useDemoRouter } from '@toolpad/core/internal';
 import PageContent from './Content';
-import { BrowserRouter } from 'react-router-dom';
 
 const NAVIGATION: Navigation = [
   {
@@ -91,23 +87,6 @@ function PageToolbar() {
 }
 // preview-end
 
-function DemoPageContent({ pathname }: { pathname: string }) {
-  return (
-    <Box
-      sx={{
-        py: 4,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        textAlign: 'center',
-      }}
-    >
-      <Typography>A bunch of graphs and maps will be here eventually.</Typography>
-    </Box>
-  );
-
-  /**SETUP for graphs and maps */
-}
 
 
 export default function DashboardLayoutBasic() {

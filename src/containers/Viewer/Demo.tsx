@@ -4,10 +4,8 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid2';
 import { Chart } from "react-google-charts";
-import Query from "./Query";
 import ChartData from './Query';
 import QueryBuilder from "./QueryBuilder";
-import { BarChart } from '@mui/icons-material';
 
 export default function PageContent() {
   const [chartData, setChartData] = React.useState([]);
