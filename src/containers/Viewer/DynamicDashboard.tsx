@@ -6,70 +6,62 @@ import Grid from '@mui/material/Grid2';
 import { Chart, GoogleChartWrapperChartType } from "react-google-charts";
 import Button from '@mui/material/Button/Button';
 import AddIcon from '@mui/icons-material/Add';
+import CustomModal from './components/Modal/Modal';
+import ChartData from './Query';
+import QueryBuilder from './QueryBuilder';
 
 export default function ChartContainer(){
-    const [rows, setRows] = React.useState<JSX.Element[]>([]);
+    const [cards, setCards] = React.useState<JSX.Element[]>([]);
+    const modalRef = React.useRef(null);
+    const [chartData, setChartData] = React.useState();
+
+    const handleFetchedData = (data) => {
+      setChartData(data);
+    }
 
     React.useEffect(() => {
         const content = LoadContent();
-        setRows(content);
+        setCards(content);
     }, []);
-    
-    const [googleLoaded, setGoogleLoaded] = React.useState(false);
 
-    React.useEffect(() =>{
-        const loadGoogle = () => {
-            const google = window.google;
-            if (google) {
-                google.load("visualization", "1", { packages: ["corechart"]});
-                google.setOnLoadCallback(() =>{
-                    setGoogleLoaded(true);
-                });
+    const openModal = () => {
+      if (modalRef.current) {
+        modalRef.current.openModal(); // Calls handleOpen in CustomModal
+      }
+    };
+
+    const addChartToDashboard = async (xOption, yOption, chartType, source) => {
+      console.log(`Adding chart with X: ${xOption}, Y: ${yOption}, Type: ${chartType}`);
+
+      const card = (
+      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+        <Card variant="outlined">
+          <CardContent>
+            <Typography variant="caption">{chartType}</Typography>
+            <Typography variant="h4">{xOption.split("/").pop()} per {yOption.split("/").pop()}</Typography>
+            <ChartData onDataFetched={handleFetchedData} query={QueryBuilder(chartType, xOption, yOption)} source={source} chartType={chartType}/>
+            {chartData ? (
+            <Chart
+              chartType={chartType}
+              data={chartData}
+              legendToggle
+            />
+            ) : (<Typography>LOADING</Typography>)
             }
-        };
+          </CardContent>
+        </Card>
+      </Grid>
+      );
 
-        loadGoogle();
-    }, []);
-
-    React.useEffect(() => {
-        if(googleLoaded){
-            const content = LoadContent();
-            setRows(content);
-        }
-    }, [googleLoaded]);
-    
+      console.log("Does data exist before adding it to cards:", chartData)
+      setCards((currentCards) => [...currentCards, card]);
+    }
 
 function LoadContent() {
 
     //Laad localstorage als die er is
 
     const cardMap = new Map()
-
-    /*
-    const pieDataTable = new google.visualization.DataTable({
-        cols: [{id: 'task', label: 'Task', type: 'string'},
-               {id: 'hours', label: 'Hours per Day', type: 'number'}],
-        rows: [{c:[{v: 'Work'}, {v: 11}]},
-               {c:[{v: 'Eat'}, {v: 2}]},
-               {c:[{v: 'Commute'}, {v: 2}]},
-               {c:[{v: 'Watch TV'}, {v:2}]},
-               {c:[{v: 'Sleep'}, {v:7, f:'7.000'}]}]
-        }, 0.6);
-    
-    const barChartTable = new google.visualization.DataTable(
-        {
-            cols: [{id: 'age', label: 'Age', type: 'number'},
-                {id: 'weight', label:'Weight', type: 'number'}
-            ],
-            rows: [{c:[{v: 4}, {v:16}]},
-            {c:[{v: 8}, {v:25}]},
-            {c:[{v: 12}, {v:40}]},
-            {c:[{v: 16}, {v:55}]},
-            {c:[{v: 20}, {v:70}]},
-            ]
-        });
-    */
-    
 
     const pieDataTable = [
         ["Task", "Hours per Day"],
@@ -93,11 +85,11 @@ function LoadContent() {
     cardMap.set("PieChart", pieDataTable);
     cardMap.set("BarChart", barChartTable);
     
-    const rows = [];
+    const cards = [];
 
     //TESTROW DELETE LATER
-    rows.push(
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+    cards.push(
+      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <Card variant="outlined">
           <CardContent>
             <Typography variant="caption">YES</Typography>
@@ -121,7 +113,7 @@ function LoadContent() {
 
     cardMap.forEach((value: (string | number)[][], key: GoogleChartWrapperChartType) => {
         console.log(key, value);
-        rows.push(
+        cards.push(
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <Card variant="outlined">
           <CardContent>
@@ -141,25 +133,26 @@ function LoadContent() {
     });
 
     //Always push one card into the list with a button which leads to adding a new card
-    rows.push(
+    cards.push(
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <Card variant="outlined">
           <CardContent>
             <Typography variant="h4"></Typography>
-            <Button onClick={addCardMenu} variant="contained" endIcon={<AddIcon/>}>
+            <Button onClick={openModal} variant="contained" endIcon={<AddIcon/>}>
             Add new chart
             </Button>
+            <CustomModal ref={modalRef} addChartToDashboard={addChartToDashboard}/>
           </CardContent>
         </Card>
       </Grid>
     );
 
-    return rows;
+    return cards;
 }
 
   return (
     <Grid container spacing={3}>
-        {rows}
+        {cards}
     </Grid>
   );
 }
@@ -168,6 +161,7 @@ function addCardMenu(){
     //Display a pop-up screen
     //Ask for chart type
     //Show valuenames from chosen dataset
+
 }
 
 function addCard(){

@@ -1,5 +1,4 @@
 import { QueryEngine } from "@comunica/query-sparql";
-import { exec } from "child_process";
 import React from "react";
 
 
@@ -24,9 +23,6 @@ const chartData = ({onDataFetched, query, source, chartType}) => {
 
 
                     for (const [ key, value ] of bindings) {
-                        console.log(value[1].value)
-                        console.log(value[1].termType)
-
                         if(chartType == "GeoChart"){
                             if(formattedData.length <= 0){
                                 formattedData.push(["longitude", "latitude"])
@@ -68,8 +64,6 @@ const chartData = ({onDataFetched, query, source, chartType}) => {
          return null;
 }
 
-export default chartData;
-
 async function executeQuery(query, source) {
     console.log("Executing...");
     const myEngine = new QueryEngine();
@@ -86,10 +80,13 @@ async function executeQuery(query, source) {
     if (result.resultType === "bindings") {
         const bindingsStream = await result.execute();
         const bindings = await bindingsStream.toArray();
-        console.log(bindings.toString());
+        console.log("bindings to string: ", bindings.toString());
         return bindings;
     } else {
         const { data } = await myEngine.resultToString(result, "application/sparql-results+json");
         data.pipe(process.stdout);
     }
 }
+
+export default chartData;
+export { executeQuery };

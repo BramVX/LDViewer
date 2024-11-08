@@ -28,6 +28,10 @@ const NAVIGATION: Navigation = [
     icon: <DashboardIcon />,
   },
   {
+    segment: 'contentdemo',
+    title: 'ContentDemo'
+  },
+  {
     kind: 'divider',
   },
   {

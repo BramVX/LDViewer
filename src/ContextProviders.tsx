@@ -32,13 +32,11 @@ const ContextProviders: React.FC<{ children: React.ReactElement }> = ({ children
     document.head.appendChild(favIcon);
   }, []);
   return (
-    <MemoryRouter>
       <RecoilRoot>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={theme}>{children}</ThemeProvider>
         </StyledEngineProvider>
       </RecoilRoot>
-    </MemoryRouter>
   );
 };
 export default ContextProviders;

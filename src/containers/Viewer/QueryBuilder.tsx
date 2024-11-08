@@ -36,13 +36,51 @@ var geosource = "https://api.data.pldn.nl/datasets/GeoDataWizard/stolpersteineni
 
 //Datanames and datatypes required
 //For now for testing only charttype name
-export default function buildQuery(chartType) : String{
+export default function buildQuery(chartType, xOption?, yOption?) : String{
+    if(xOption == undefined){
+      return barquery;
+    }
     if(chartType == "BarChart"){
-        return barquery;
+        return buildBarQuery(xOption, yOption);
     }
     if(chartType == "GeoChart"){
         return geoquery;
     }
 
     return barquery;
+}
+
+/*
+PREFIX TE:<https://data.pldn.nl/bram/test/titanic.csv/def/>
+
+select ?name ?age ?fare ?class
+where {
+  ?o TE:Name ?name ;
+    TE:Age ?age ;
+    TE:Fare ?fare ;
+    TE:Pclass ?class 
+    FILTER(?age > 18)
+} 
+ORDER BY ASC(?age)
+limit 10
+*/
+
+function buildBarQuery(xOption, yOption) : String{
+  var x = xOption.split("/").pop();
+  var y = yOption.split("/").pop();
+
+  var query = `
+    SELECT ?`+x+` ?`+y+` 
+    WHERE {
+      ?o <`+xOption+`> ?`+x+` ;
+      <`+yOption+`> ?`+y+` 
+    }
+    ORDER BY ASC(?`+y+`)
+    limit 10
+    `;
+
+  console.log("Query that was made: ", query);
+
+  return query;
+
 }
