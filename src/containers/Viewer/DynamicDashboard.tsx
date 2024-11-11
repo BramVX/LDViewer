@@ -5,18 +5,20 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid2';
 import { Chart, GoogleChartWrapperChartType } from "react-google-charts";
 import Button from '@mui/material/Button/Button';
-import AddIcon from '@mui/icons-material/Add';
+
 import CustomModal from './components/Modal/Modal';
-import ChartData from './Query';
+import ChartData, { fetchChartData } from './Query';
 import QueryBuilder from './QueryBuilder';
+import CardWithChart from './components/CardWithChart';
 
 export default function ChartContainer(){
-    const [cards, setCards] = React.useState<JSX.Element[]>([]);
+    const [cards, setCards] = React.useState([]);
     const modalRef = React.useRef(null);
-    const [chartData, setChartData] = React.useState();
+    const [chartOptions, setChartOptions] = React.useState(null);
 
-    const handleFetchedData = (data) => {
-      setChartData(data);
+    const handleAddChart = (options) =>{
+      setChartOptions(options);
+      AddChartToDashboard(options);
     }
 
     React.useEffect(() => {
@@ -26,10 +28,11 @@ export default function ChartContainer(){
 
     const openModal = () => {
       if (modalRef.current) {
-        modalRef.current.openModal(); // Calls handleOpen in CustomModal
+        modalRef.current.openModal(); 
       }
     };
 
+    /*
     const addChartToDashboard = async (xOption, yOption, chartType, source) => {
       console.log(`Adding chart with X: ${xOption}, Y: ${yOption}, Type: ${chartType}`);
 
@@ -40,21 +43,29 @@ export default function ChartContainer(){
             <Typography variant="caption">{chartType}</Typography>
             <Typography variant="h4">{xOption.split("/").pop()} per {yOption.split("/").pop()}</Typography>
             <ChartData onDataFetched={handleFetchedData} query={QueryBuilder(chartType, xOption, yOption)} source={source} chartType={chartType}/>
-            {chartData ? (
             <Chart
               chartType={chartType}
               data={chartData}
               legendToggle
             />
-            ) : (<Typography>LOADING</Typography>)
-            }
           </CardContent>
         </Card>
       </Grid>
       );
+      
 
       console.log("Does data exist before adding it to cards:", chartData)
       setCards((currentCards) => [...currentCards, card]);
+    }
+      */
+
+    async function AddChartToDashboard({xOption, yOption, chartType, source}){
+      const queryresult = await fetchChartData(QueryBuilder(chartType, xOption, yOption), source,  chartType);
+      setCards((currentCards) => [...currentCards, 
+        <CardWithChart chartType={chartType} data={queryresult} x={xOption.split("/").pop()} y={yOption.split("/").pop()} />
+      ]);
+
+      LoadContent();
     }
 
 function LoadContent() {
@@ -73,19 +84,55 @@ function LoadContent() {
       ];
 
     const barChartTable = [
-        ["Age", "Weight"],
-        [4,16],
-        [8,25],
-        [12,40],
-        [16,55],
-        [20,70]
+      [
+        "buyer",
+        "price"
+      ],
+      [
+        "H.A.O. Steenmeyer-Peters",
+        2750
+      ],
+      [
+        "A. Verboon",
+        4100
+      ],
+      [
+        "A. Verboon",
+        4100
+      ],
+      [
+        "J.M. Tesser",
+        4300
+      ],
+      [
+        "A. Verboon",
+        4900
+      ],
+      [
+        "A. Verboon",
+        4900
+      ],
+      [
+        "J.M. Jacobs",
+        5800
+      ],
+      [
+        "J.M. Jacobs",
+        5800
+      ],
+      [
+        "F.G. Evers",
+        6000
+      ],
+      [
+        "F.G. Evers",
+        6200
+      ]
     ]
 
     // Add key-value pairs to the hashmap
     cardMap.set("PieChart", pieDataTable);
     cardMap.set("BarChart", barChartTable);
-    
-    const cards = [];
 
     //TESTROW DELETE LATER
     cards.push(
@@ -93,7 +140,7 @@ function LoadContent() {
         <Card variant="outlined">
           <CardContent>
             <Typography variant="caption">YES</Typography>
-            <Typography variant="h4">W.I.P.</Typography>
+            <Typography variant="h4">FAKE.</Typography>
             <Chart
               chartType="PieChart"
               data={[
@@ -118,7 +165,7 @@ function LoadContent() {
         <Card variant="outlined">
           <CardContent>
             <Typography variant="caption">{key}</Typography>
-            <Typography variant="h4">W.I.P.</Typography>
+            <Typography variant="h4">FAKE</Typography>
             {value ? (
             <Chart
               chartType={key}
@@ -138,10 +185,7 @@ function LoadContent() {
         <Card variant="outlined">
           <CardContent>
             <Typography variant="h4"></Typography>
-            <Button onClick={openModal} variant="contained" endIcon={<AddIcon/>}>
-            Add new chart
-            </Button>
-            <CustomModal ref={modalRef} addChartToDashboard={addChartToDashboard}/>
+            <CustomModal onAddChart={handleAddChart}></CustomModal>
           </CardContent>
         </Card>
       </Grid>
@@ -155,17 +199,4 @@ function LoadContent() {
         {cards}
     </Grid>
   );
-}
-
-function addCardMenu(){
-    //Display a pop-up screen
-    //Ask for chart type
-    //Show valuenames from chosen dataset
-
-}
-
-function addCard(){
-    //Add card to list
-    //Reload the list and show
-    //Save current setup to localstorage
 }

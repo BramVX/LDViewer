@@ -1,8 +1,7 @@
 import { executeQuery } from "#containers/Viewer/Query.tsx";
-import { Box, FormControl, InputLabel, MenuItem, Modal, Select, TextField, Typography } from "@mui/material";
+import { Box, Button, FormControl, InputLabel, MenuItem, Modal, Select, TextField, Typography } from "@mui/material";
 import React, { createElement, useImperativeHandle, useState } from "react";
-import ReactDOM from "react-dom";
-import { createRoot } from "react-dom/client";
+import AddIcon from '@mui/icons-material/Add';
 
 
 const style = {
@@ -17,11 +16,7 @@ const style = {
   p: 4,
 };
 
-interface CustomModalProps {
-  addChartToDashboard: (xOption: any, yOption: any, chartType: any) => void;
-}
-
-const CustomModal = React.forwardRef(({ addChartToDashboard }: CustomModalProps, ref) =>{
+const CustomModal = ({onAddChart}) => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -31,11 +26,6 @@ const CustomModal = React.forwardRef(({ addChartToDashboard }: CustomModalProps,
     const [yOption, setYOption] = useState('');
     const [chartType, setChartType] = useState('');
     const [source, setSource] = useState('');
-
-    useImperativeHandle(ref, () =>({
-      openModal: handleOpen
-    }));
-
     const [color, setColor] = useState("");
 
     function handleSourceChange(e) {
@@ -73,22 +63,17 @@ const CustomModal = React.forwardRef(({ addChartToDashboard }: CustomModalProps,
       }
     }
 
-    const handleSubmit = (event) => {
-      console.log('handleSubmit ran');
-      event.preventDefault(); // 👈️ Prevent page refresh
-
-      console.log('x 👉️', xOption);
-      console.log('y 👉️', yOption);
-      alert(`You chose for '${xOption}' and '${yOption}', with chart type '${chartType}'`);
-      //Close modal
-
-      //Add chart to dynamic dashboard
-      addChartToDashboard(xOption, yOption, chartType, source);
-      
+    function handleSubmit(event){
+      console.log("running")
+      event.preventDefault(); 
+      onAddChart({xOption,yOption,chartType,source});
     }
 
     return (
         <div>
+          <Button onClick={handleOpen} variant="contained" endIcon={<AddIcon/>}>
+            Add new chart
+          </Button>
           <Modal
             open={open}
             onClose={handleClose}
@@ -133,6 +118,6 @@ const CustomModal = React.forwardRef(({ addChartToDashboard }: CustomModalProps,
           </Modal>
         </div>
       );
-});
+}
 
 export default CustomModal;

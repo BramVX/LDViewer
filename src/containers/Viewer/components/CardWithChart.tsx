@@ -2,24 +2,25 @@ import React, { useState } from 'react';
 import { Card, CardContent, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { Chart } from "react-google-charts";
-import chartData from '../Query';
 
-function CardContentComponent(title, subtitle, charttype, data) {
+function CardWithChart({chartType, data, x, y}) {
   return (
-    <Card variant="outlined">
-      <CardContent>
-        <Typography variant="caption">{title}</Typography>
-        <Typography variant="h4">{subtitle}</Typography>
-        <Chart
-          chartType={charttype}
-          data={data}
-          legendToggle
-        />
-      </CardContent>
-    </Card>
+    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+        <Card variant="outlined">
+          <CardContent>
+            <Typography variant="caption">{chartType}</Typography>
+            <Typography variant="h4">{x} per {y}</Typography>
+            <Chart
+              chartType={chartType}
+              data={data}
+              legendToggle
+            />
+          </CardContent>
+        </Card>
+      </Grid>
   );
 }
-
+/*
 function CardList() {
   const [cards, setCards] = useState([]);
 
@@ -40,5 +41,6 @@ function CardList() {
     </div>
   );
 }
+  */
 
-export default CardList;
+export default CardWithChart;

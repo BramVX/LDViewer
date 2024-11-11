@@ -1782,13 +1782,13 @@ export default function PageContent() {
             <Typography variant="h4">Leaflet mapchart</Typography>
             <ChartData onDataFetched={handleFetchedData} query={QueryBuilder("GeoChart")} source={geosource} chartType="GeoChart"/>
             <div id='map'>
-            <MapContainer center={[51.836169,5.857853]} zoom={12} style={{height:'300px', width:'100%', margin:"10px"}}>
+            <MapContainer center={[51.836169, 5.857853]} zoom={12} style={{height:'300px', width:'100%', margin:"10px"}}>
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
               {markers.map((marker,index) => (
-                <CircleMarker key={index} center={[parseFloat(marker[0]), parseFloat(marker[1])]} radius={5} />
+                <CircleMarker key={index} center={[parseFloat(marker[1]), parseFloat(marker[0])]} radius={5} />
               ))}
             </MapContainer>
             </div>
@@ -1807,21 +1807,12 @@ export default function PageContent() {
       <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <Card variant="outlined">
           <CardContent>
-            <Typography variant="caption">Baseless</Typography>
-            <Typography variant="h4">BarChart</Typography>
+            <Typography variant="caption">BarChart</Typography>
+            <Typography variant="h4">Test for query</Typography>
+            <ChartData onDataFetched={handleFetchedData} query={QueryBuilder("BarChart", 'https://schema.org/buyer', 'https://schema.org/price',)} source={"https://api.data.pldn.nl/datasets/GeoDataWizard/verkaufsbuchernijmegen/services/verkaufsbuchernijmegen/sparql"} chartType="BarChart"/>
             <Chart
               chartType='BarChart'
-              data={[
-                ["Age", "Weight"],
-                [4, 16],
-                [8, 25],
-                [12, 40],
-                [16, 55],
-                [20, 70],
-              ]}
-              options={{
-                title: "Average Weight by Age",
-              }}
+              data={chartData}
               legendToggle
             />
           </CardContent>

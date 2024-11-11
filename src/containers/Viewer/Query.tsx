@@ -2,7 +2,7 @@ import { QueryEngine } from "@comunica/query-sparql";
 import React from "react";
 
 
-const chartData = ({onDataFetched, query, source, chartType}) => {
+const chartData = ({query, source, chartType}) => {
         React.useEffect(() => {
             const fetchData = async () => {
             try{
@@ -28,7 +28,7 @@ const chartData = ({onDataFetched, query, source, chartType}) => {
                                 formattedData.push(["longitude", "latitude"])
                             }
                             const [longitude, latitude] = key[1].value.slice(6, -1).split(" ");
-                            formattedData.push([longitude, latitude])
+                            formattedData.push([latitude, longitude])
                         }else if (chartType == "BarChart"){
                             if(formattedData.length <= 0){
                                 formattedData.push([key[0].value, value[0].value])
@@ -50,8 +50,7 @@ const chartData = ({onDataFetched, query, source, chartType}) => {
                         formattedData.push([item[xAxisLabel].value, parseInt(item[yAxisLabel].value, 10)]);
                     });
                     */
-        
-                    onDataFetched(formattedData);
+                   return formattedData;
                 }
                 } catch(error){
                     console.error("Failed to fetch data", error);
@@ -62,6 +61,29 @@ const chartData = ({onDataFetched, query, source, chartType}) => {
          }, [query, source, chartType]);
 
          return null;
+}
+
+async function fetchChartData(query, source, chartType){
+    const formattedData = [];
+    const bindings = await executeQuery(query, source);
+    if(bindings.length > 0){
+        for (const [ key, value ] of bindings) {
+            if(chartType == "GeoChart"){
+                if(formattedData.length <= 0){
+                    formattedData.push(["longitude", "latitude"])
+                }
+                const [longitude, latitude] = key[1].value.slice(6, -1).split(" ");
+                    formattedData.push([latitude, longitude])
+                }else if (chartType == "BarChart"){
+                    if(formattedData.length <= 0){
+                        formattedData.push([key[0].value, value[0].value])
+                    }
+                    formattedData.push([key[1].value, parseInt(value[1].value)])
+                }
+            }
+        return formattedData;
+    }
+    return null;
 }
 
 async function executeQuery(query, source) {
@@ -80,7 +102,7 @@ async function executeQuery(query, source) {
     if (result.resultType === "bindings") {
         const bindingsStream = await result.execute();
         const bindings = await bindingsStream.toArray();
-        console.log("bindings to string: ", bindings.toString());
+        console.log("bindings to string:",bindings.toString());
         return bindings;
     } else {
         const { data } = await myEngine.resultToString(result, "application/sparql-results+json");
@@ -89,4 +111,4 @@ async function executeQuery(query, source) {
 }
 
 export default chartData;
-export { executeQuery };
+export { executeQuery, fetchChartData };
