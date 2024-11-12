@@ -60,9 +60,10 @@ export default function ChartContainer(){
       */
 
     async function AddChartToDashboard({xOption, yOption, chartType, source}){
-      const queryresult = await fetchChartData(QueryBuilder(chartType, xOption, yOption), source,  chartType);
+      const query = QueryBuilder(chartType, xOption, yOption);
+      const queryresult = await fetchChartData( query, source,  chartType);
       setCards((currentCards) => [...currentCards, 
-        <CardWithChart chartType={chartType} data={queryresult} x={xOption.split("/").pop()} y={yOption.split("/").pop()} />
+        <CardWithChart chartType={chartType} data={queryresult} x={xOption.split("/").pop()} y={yOption.split("/").pop()} query={query} />
       ]);
 
       LoadContent();
