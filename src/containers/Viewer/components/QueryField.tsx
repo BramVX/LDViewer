@@ -8,6 +8,7 @@ function QueryField({query}) {
           label="SPARQL"
           multiline
           defaultValue={query}
+          style={{width:"100%"}}
         />
     );
 }
