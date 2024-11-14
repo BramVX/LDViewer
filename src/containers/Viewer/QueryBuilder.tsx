@@ -61,7 +61,7 @@ where {
     TE:Pclass ?class 
     FILTER(?age > 18)
 } 
-ORDER BY ASC(?age)
+ORDER BY ASC(?age)s
 limit 10
 */
 
@@ -69,15 +69,13 @@ function buildBarQuery(xOption, yOption) : String{
   var x = xOption.split("/").pop();
   var y = yOption.split("/").pop();
 
-  var query = `
-    SELECT ?`+x+` ?`+y+` 
+  var query = `SELECT ?`+x+` ?`+y+` 
     WHERE {
       ?o <`+xOption+`> ?`+x+` ;
       <`+yOption+`> ?`+y+` 
     }
     ORDER BY ASC(?`+y+`)
-    limit 10
-    `;
+    limit 10`;
 
   console.log("Query that was made: ", query);
 
