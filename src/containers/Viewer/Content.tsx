@@ -5,12 +5,13 @@ import CDemo from './ContentDemo.tsx';
 import { useEffect, useState } from 'react';
 
 export default function PageContent({ pathname }: { pathname: string }) {
-
     const storedCards = JSON.parse(localStorage.getItem("cards"));
     const [cards, setCards] = useState(storedCards);
 
     useEffect(() => {
         localStorage.setItem("cards", JSON.stringify(cards))
+        console.log("localstorage updated!");
+        console.log(JSON.parse(localStorage.getItem("cards")))
     }, [cards])
 
     switch(pathname) {
