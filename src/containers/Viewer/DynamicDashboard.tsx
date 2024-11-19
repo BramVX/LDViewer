@@ -41,16 +41,47 @@ const ChartContainer = ({cards, setCards}) => {
       const queryresult = await fetchChartData( query, source,  chartType);
       const x = xOption.split("/").pop();
       const y = yOption.split("/").pop();
-      const index = id;
       const editedCard = {chartType, queryresult, x, y, query, id};
 
-      if(~index){
+      if(~id){
         const updatedCards = [...cards];
-        updatedCards[index] = editedCard;
+        updatedCards[id] = editedCard;
         setCards(updatedCards);
       }
       console.log("NEW CARDS AFTER EDIT ", cards);
     }
+
+
+    const DeleteChartFromDashboard = (id: number) => {
+      console.log("To Delete:",id);
+      console.log("Old cards", cards);
+      if(id!=null){
+        const updatedCards = [...cards];
+        console.log(updatedCards.length);
+        for (let i = id; i < updatedCards.length - 1; i++){
+          updatedCards[i + 1].id = i;
+          updatedCards[i] = updatedCards[i + 1];
+        }
+        updatedCards.pop();
+        console.log("New cards", updatedCards);
+        setCards(updatedCards);
+      }
+    }
+/*
+    function DeleteChartFromDashboard({id}){
+      console.log("To Delete:",id);
+      console.log("Old cards", cards);
+      if(id!=null){
+        const updatedCards = [...cards];
+        for (let i = id; id < updatedCards.length; i++){
+          updatedCards[i] = updatedCards[i + 1];
+        }
+        updatedCards.pop();
+        console.log("New cards", updatedCards);
+        setCards(updatedCards);
+      }
+    }
+      */
 
   const AddButton = () => {
     //Always push one card into the list with a button which leads to adding a new card
@@ -73,7 +104,7 @@ const ChartContainer = ({cards, setCards}) => {
         {cards != null && cards.map((items) => {
           console.log("loop: ", items, cards)
           return (
-              <CardWithChart chartType={items.chartType} data={items.queryresult} x={items.x} y={items.y} query={items.query} onEditChart={EditChartInDashboard} id={items.id}/>
+              <CardWithChart chartType={items.chartType} data={items.queryresult} x={items.x} y={items.y} query={items.query} onEditChart={EditChartInDashboard} onDeleteChart={DeleteChartFromDashboard} id={items.id}/>
           );
         })}
       <AddButton/>
