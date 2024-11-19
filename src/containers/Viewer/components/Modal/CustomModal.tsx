@@ -16,7 +16,7 @@ const style = {
   p: 4,
 };
 
-const CustomModal = ({onAddChart}) => {
+const CustomModal = ({onUpdate, id}) => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -66,14 +66,28 @@ const CustomModal = ({onAddChart}) => {
     function handleSubmit(event){
       console.log("running")
       event.preventDefault(); 
-      onAddChart({xOption,yOption,chartType,source});
+      //Can be split up into add chart or edit chart
+      if(id == null){
+        console.log("ADDING CHART");
+        onUpdate({xOption,yOption,chartType,source});
+      }else{
+        console.log("EDITING CHART");
+        onUpdate({xOption,yOption,chartType,source, id});
+      }
+    }
+
+    const AddButton = () => {
+      const text = id != null ? "Edit chart" : "Add new chart";
+      return(
+        <Button onClick={handleOpen} variant="contained" endIcon={<AddIcon/>}>
+            {text}
+        </Button>
+      )
     }
 
     return (
         <div>
-          <Button onClick={handleOpen} variant="contained" endIcon={<AddIcon/>}>
-            Add new chart
-          </Button>
+          <AddButton/>
           <Modal
             open={open}
             onClose={handleClose}
