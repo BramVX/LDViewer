@@ -1,7 +1,12 @@
 import { executeQuery } from "#containers/Viewer/Query.tsx";
 import { Box, Button, FormControl, InputLabel, MenuItem, Modal, Select, TextField, Typography } from "@mui/material";
-import React, { createElement, useImperativeHandle, useState } from "react";
+import React, { createElement, useEffect, useImperativeHandle, useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
+import BarChartStrategy from "#containers/Viewer/ChartTypes/BarChart.tsx";
+import GeoChartStrategy from "#containers/Viewer/ChartTypes/GeoChart.tsx";
+import PieChartStrategy from "#containers/Viewer/ChartTypes/PieChart.tsx";
+import ChartOptions from "./ChartOptions";
+import AreaChartStrategy from "#containers/Viewer/ChartTypes/AreaChart.tsx";
 
 
 const style = {
@@ -20,13 +25,15 @@ const CustomModal = ({onUpdate, id}) => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    const [xOptions, setXOptions] = useState([]);
-    const [yOptions, setYOptions] = useState([]);
-    const [xOption, setXOption] = useState('');
-    const [yOption, setYOption] = useState('');
     const [chartType, setChartType] = useState('');
     const [source, setSource] = useState('');
     const [color, setColor] = useState("");
+    const [predicates, setPredicates] = useState([]);
+    const [chartOptions, setChartOptions] = useState([]);
+
+    useEffect(() => {
+      console.log("Chart type chosen", chartType);
+    }, [chartType]);
 
     function handleSourceChange(e) {
       var query = `SELECT DISTINCT ?predicate {
@@ -48,33 +55,53 @@ const CustomModal = ({onUpdate, id}) => {
       });
 
       function fillMenu(menuItems){
-        let xList = [];
-        let yList = [];
+        let predicateList = [];
 
         menuItems.forEach(binding => {
           const value = binding.get('predicate').value;
           const label = value.split("/").pop();
-          xList.push({ value, label });
-          yList.push({ value, label });
+          predicateList.push({ value, label });
         });
 
-        setXOptions(xList);
-        setYOptions(yList);
+        setPredicates(predicateList);
       }
+    }
+
+    const handleOptionsChange = (options) => {
+      setChartOptions(options);
+      console.log(options);
     }
 
     function handleSubmit(event){
-      console.log("running")
       event.preventDefault(); 
-      //Can be split up into add chart or edit chart
+      console.log("Type:", chartType)
+      const chartStrategy = chooseStrategy(chartType);
       if(id == null){
         console.log("ADDING CHART");
-        onUpdate({xOption,yOption,chartType,source});
+        console.log(chartStrategy);
+        console.log(chartOptions);
+        onUpdate({chartOptions,chartStrategy,source});
       }else{
         console.log("EDITING CHART");
-        onUpdate({xOption,yOption,chartType,source, id});
+        onUpdate({chartOptions,chartStrategy,source, id});
       }
     }
+
+    function chooseStrategy(chartType){
+      switch(chartType){
+        case "BarChart":
+         return new BarChartStrategy();
+        case "GeoChart":
+         return new GeoChartStrategy();
+        case "PieChart":
+         return new PieChartStrategy();
+        case "AreaChart":
+          return new AreaChartStrategy();
+        default:
+         return new BarChartStrategy();
+      }
+    }
+
 
     const AddButton = () => {
       const text = id != null ? "Edit chart" : "Add new chart";
@@ -99,34 +126,25 @@ const CustomModal = ({onUpdate, id}) => {
                 Add chart to dashboard
               </Typography>
               <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                <FormControl>
                   <form onSubmit={handleSubmit}>
+                  <FormControl>
                     <TextField id="filled-required" label="Source" variant="filled" onChange={handleSourceChange} color={color}/>
+                  </FormControl>
+                  <FormControl sx={{ m: 1, minWidth: 120 }}>
                     <InputLabel id="chartType">Chart type</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-filled-label"
-                      id="demo-simple-select-filled"
-                      onChange={event => setChartType(event.target.value)} value={chartType}>
-                      <MenuItem value={"BarChart"}>BarChart</MenuItem>
-                      <MenuItem value={"GeoChart"}>GeoChart</MenuItem>
-                    </Select>
-                    <Select id="x-axis" onChange={event => setXOption(event.target.value)} value={xOption}>
-                      {xOptions.map(option => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    <Select id="y-axis" onChange={event => setYOption(event.target.value)} value={yOption}>
-                      {yOptions.map(option => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                      <Select
+                        labelId="demo-simple-select-filled-label"
+                        id="demo-simple-select-filled"
+                        onChange={event => setChartType(event.target.value)} value={chartType}>
+                        <MenuItem value={"BarChart"}>BarChart</MenuItem>
+                        <MenuItem value={"GeoChart"}>GeoChart</MenuItem>
+                        <MenuItem value={"PieChart"}>PieChart</MenuItem>
+                        <MenuItem value={"AreaChart"}>AreaChart</MenuItem>
+                      </Select>
+                    </FormControl>
+                    <ChartOptions chartType={chartType} predicates={predicates} onOptionsChange={handleOptionsChange}></ChartOptions>
                     <button type="submit">Add</button>
                   </form>
-                </FormControl>
               </Typography>
             </Box>
           </Modal>

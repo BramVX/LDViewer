@@ -15,30 +15,30 @@ const ChartContainer = ({cards, setCards}) => {
       localStorage.setItem("cards", JSON.stringify(cards));
     }, [cards]);
 
-    async function AddChartToDashboard({xOption, yOption, chartType, source}){
-      const query = QueryBuilder(chartType, xOption, yOption);
-      const queryresult = await fetchChartData( query, source,  chartType);
-      const x = xOption.split("/").pop();
-      const y = yOption.split("/").pop();
+    async function AddChartToDashboard({chartOptions, chartStrategy, source}){
+      const chartType = chartStrategy.getChartType();
+      console.log("options in dynamicdashboard", chartOptions);
+      const query = chartStrategy.buildQuery(chartOptions);
+      console.log(chartStrategy);
+      const queryresult = await fetchChartData( query, source,  chartStrategy);
+      const x = chartOptions[0].split("/").pop();
+      const y = chartOptions[1].split("/").pop();
       const id = cards ? JSON.parse(localStorage.getItem("cards")).length : 0;
 
       console.log("new ID: ", id)
       const newCard = { chartType, queryresult, x, y, query, id};
 
       if(cards != null){
-        console.log("Not empty ",cards);
         setCards([...cards, newCard]);
-        console.log("Not empty ",cards);
       }else{
-        console.log("Is empty ", cards);
         setCards([newCard]);
-        console.log("Is empty ", cards);
       }
     }
 
-    async function EditChartInDashboard({xOption, yOption, chartType, source, id}){
-      const query = QueryBuilder(chartType, xOption, yOption);
-      const queryresult = await fetchChartData( query, source,  chartType);
+    async function EditChartInDashboard({xOption, yOption, chartStrategy, source, id}){
+      const chartType = chartStrategy.getChartType();
+      const query = chartStrategy.buildQuery([xOption, yOption]);
+      const queryresult = await fetchChartData( query, source,  chartStrategy);
       const x = xOption.split("/").pop();
       const y = yOption.split("/").pop();
       const index = id;
@@ -73,7 +73,7 @@ const ChartContainer = ({cards, setCards}) => {
         {cards != null && cards.map((items) => {
           console.log("loop: ", items, cards)
           return (
-              <CardWithChart chartType={items.chartType} data={items.queryresult} x={items.x} y={items.y} query={items.query} onEditChart={EditChartInDashboard} id={items.id}/>
+              <CardWithChart chartType={items.chartType} chartData={items.queryresult} x={items.x} y={items.y} query={items.query} onEditChart={EditChartInDashboard} id={items.id}/>
           );
         })}
       <AddButton/>

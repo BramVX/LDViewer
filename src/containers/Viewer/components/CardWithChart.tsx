@@ -5,6 +5,7 @@ import { Chart } from "react-google-charts";
 import CustomTabPanel from './CustomTabPanel';
 import QueryField from './QueryField';
 import CustomModal from './Modal/CustomModal';
+import Visualization from './Visualization';
 
 function a11yProps(index: number) {
   return {
@@ -15,7 +16,7 @@ function a11yProps(index: number) {
 
 interface CardWithChartProps {
   chartType: any;
-  data: any;
+  chartData: any;
   x: string;
   y: string;
   query: string;
@@ -23,7 +24,7 @@ interface CardWithChartProps {
   id: number;
 }
 
-const CardWithChart: React.FC<CardWithChartProps> = ({chartType, data, x, y, query, onEditChart, id}) => {
+const CardWithChart: React.FC<CardWithChartProps> = ({chartType, chartData, x, y, query, onEditChart, id}) => {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -44,11 +45,7 @@ const CardWithChart: React.FC<CardWithChartProps> = ({chartType, data, x, y, que
               </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
-            <Chart
-                chartType={chartType}
-                data={data}
-                legendToggle
-            />
+            <Visualization chartType={chartType} chartData={chartData}/>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
               <QueryField query={query} />
