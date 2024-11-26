@@ -49,7 +49,20 @@ export default class PieChartStrategy implements ChartStrategy {
     }
 
     buildQuery(values: any): string {
-        return "not implemented";
+        var x = values[0].split("/").pop();
+        var y = values[1].split("/").pop();
+      
+        var query = `SELECT ?`+x+` ?`+y+` 
+          WHERE {
+            ?o <`+values[0]+`> ?`+x+` ;
+            <`+values[1]+`> ?`+y+` 
+          }
+          ORDER BY ASC(?`+y+`)
+          limit 5`;
+      
+        console.log("Query that was made: ", query);
+      
+        return query;
     }
 }
   

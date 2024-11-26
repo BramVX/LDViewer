@@ -6,6 +6,7 @@ import BarChartStrategy from "#containers/Viewer/ChartTypes/BarChart.tsx";
 import GeoChartStrategy from "#containers/Viewer/ChartTypes/GeoChart.tsx";
 import PieChartStrategy from "#containers/Viewer/ChartTypes/PieChart.tsx";
 import ChartOptions from "./ChartOptions";
+import AreaChartStrategy from "#containers/Viewer/ChartTypes/AreaChart.tsx";
 
 
 const style = {
@@ -94,6 +95,8 @@ const CustomModal = ({onUpdate, id}) => {
          return new GeoChartStrategy();
         case "PieChart":
          return new PieChartStrategy();
+        case "AreaChart":
+          return new AreaChartStrategy();
         default:
          return new BarChartStrategy();
       }

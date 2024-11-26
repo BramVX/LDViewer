@@ -1,5 +1,7 @@
 import AreaChartStrategy from "#containers/Viewer/ChartTypes/AreaChart.tsx";
 import BarChartStrategy from "#containers/Viewer/ChartTypes/BarChart.tsx";
+import GeoChartStrategy from "#containers/Viewer/ChartTypes/GeoChart.tsx";
+import PieChartStrategy from "#containers/Viewer/ChartTypes/PieChart.tsx";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import React, { useState } from "react";
 
@@ -10,8 +12,16 @@ const ChartOptions = ({chartType, predicates, onOptionsChange}) => {
             chartStrategy = new BarChartStrategy();
             console.log("AND I GET SET: ", chartStrategy)
             break;
+        case "PieChart":
+            chartStrategy = new PieChartStrategy();
+            console.log("AND I GET SET: ", chartStrategy)
+            break;
         case "AreaChart":
             chartStrategy = new AreaChartStrategy();
+            console.log("AND I GET SET: ", chartStrategy)
+            break;
+        case "GeoChart":
+            chartStrategy = new GeoChartStrategy();
             console.log("AND I GET SET: ", chartStrategy)
             break;
         default:

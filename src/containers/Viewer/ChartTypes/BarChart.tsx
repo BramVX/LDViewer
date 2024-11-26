@@ -22,7 +22,6 @@ export default class BarChartStrategy implements ChartStrategy {
     }
 
     buildQuery(values) : string{
-        console.log(values);
         var x = values[0].split("/").pop();
         var y = values[1].split("/").pop();
       
@@ -32,7 +31,7 @@ export default class BarChartStrategy implements ChartStrategy {
             <`+values[1]+`> ?`+y+` 
           }
           ORDER BY ASC(?`+y+`)
-          limit 10`;
+          limit 5`;
       
         console.log("Query that was made: ", query);
       

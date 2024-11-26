@@ -73,7 +73,7 @@ const ChartContainer = ({cards, setCards}) => {
         {cards != null && cards.map((items) => {
           console.log("loop: ", items, cards)
           return (
-              <CardWithChart chartType={items.chartType} data={items.queryresult} x={items.x} y={items.y} query={items.query} onEditChart={EditChartInDashboard} id={items.id}/>
+              <CardWithChart chartType={items.chartType} chartData={items.queryresult} x={items.x} y={items.y} query={items.query} onEditChart={EditChartInDashboard} id={items.id}/>
           );
         })}
       <AddButton/>
