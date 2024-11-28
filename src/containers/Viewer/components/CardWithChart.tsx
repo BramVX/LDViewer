@@ -1,10 +1,11 @@
 import React from 'react';
-import { Box, Card, CardContent, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, Tab, Tabs, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { Chart } from "react-google-charts";
 import CustomTabPanel from './CustomTabPanel';
 import QueryField from './QueryField';
 import CustomModal from './Modal/CustomModal';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import Visualization from './Visualization';
 
 function a11yProps(index: number) {
@@ -21,10 +22,11 @@ interface CardWithChartProps {
   y: string;
   query: string;
   onEditChart: any;
+  onDeleteChart: any;
   id: number;
 }
 
-const CardWithChart: React.FC<CardWithChartProps> = ({chartType, chartData, x, y, query, onEditChart, id}) => {
+const CardWithChart: React.FC<CardWithChartProps> = ({chartType, data, x, y, query, onEditChart, onDeleteChart, id}) => {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -51,6 +53,7 @@ const CardWithChart: React.FC<CardWithChartProps> = ({chartType, chartData, x, y
               <QueryField query={query} onSubmit={onEditChart}/>
             </CustomTabPanel>
             <CustomModal onUpdate={onEditChart} id={id}></CustomModal>
+            <Button onClick={() => onDeleteChart(id)} variant="contained" endIcon={<RemoveCircleOutlineIcon/>}>Delete chart</Button>
           </CardContent>
         </Card>
       </Grid>
