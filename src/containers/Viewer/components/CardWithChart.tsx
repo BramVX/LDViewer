@@ -22,16 +22,21 @@ interface CardWithChartProps {
   y: string;
   query: string;
   onEditChart: any;
+  onEditQuery: any;
   onDeleteChart: any;
   id: number;
 }
 
-const CardWithChart: React.FC<CardWithChartProps> = ({chartType, data, x, y, query, onEditChart, onDeleteChart, id}) => {
+const CardWithChart: React.FC<CardWithChartProps> = ({chartType, chartData, x, y, query, onEditChart, onEditQuery , onDeleteChart, id}) => {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  const handleQuerySubmit = (newQuery) => {
+    onEditQuery({newQuery, id});
+  }
 
   console.log("THE ID: ", id);
 
@@ -50,7 +55,7 @@ const CardWithChart: React.FC<CardWithChartProps> = ({chartType, data, x, y, que
             <Visualization chartType={chartType} chartData={chartData}/>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-              <QueryField query={query} onSubmit={onEditChart}/>
+              <QueryField query={query} onSubmit={handleQuerySubmit}/>
             </CustomTabPanel>
             <CustomModal onUpdate={onEditChart} id={id}></CustomModal>
             <Button onClick={() => onDeleteChart(id)} variant="contained" endIcon={<RemoveCircleOutlineIcon/>}>Delete chart</Button>

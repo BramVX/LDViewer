@@ -1,18 +1,20 @@
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField/TextField";
 import React, { useState } from "react";
+import buildQuery from "../QueryBuilder";
 
 function QueryField({query, onSubmit}) {
 
   const [currentQuery, setCurrentQuery] = useState(query);
 
   const handleChange = (event) => {
-      setCurrentQuery(event.target.value);
+    setCurrentQuery(event.target.value);
   };
 
   const handleSubmit = () => {
-      onSubmit(currentQuery); 
+    onSubmit(currentQuery); 
   };
+  
 
   return(
     <div>
