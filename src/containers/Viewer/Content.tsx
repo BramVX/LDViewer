@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Demo from './Demo.tsx';
 import DDashboard from './DynamicDashboard.tsx';
 import CDemo from './ContentDemo.tsx';
 import { useEffect, useState } from 'react';
@@ -15,8 +14,10 @@ export default function PageContent({ pathname }: { pathname: string }) {
     }, [cards])
 
     switch(pathname) {
+        /*
         case "/demo":
             return(<Demo />);
+            */
         case "/dashboard":
             return(<DDashboard cards={cards} setCards={setCards}/>);
         case "/contentdemo":
