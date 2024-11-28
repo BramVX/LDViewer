@@ -27,7 +27,7 @@ const CustomModal = ({onUpdate, id}) => {
     const handleClose = () => setOpen(false);
     const [chartType, setChartType] = useState('');
     const [source, setSource] = useState('');
-    const [color, setColor] = useState("");
+    const [color, setColor] = useState<"success" | "warning" | "error" | "primary" | "secondary" | "info">("primary");
     const [predicates, setPredicates] = useState([]);
     const [chartOptions, setChartOptions] = useState([]);
 
