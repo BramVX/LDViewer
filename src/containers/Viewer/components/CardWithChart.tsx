@@ -48,7 +48,7 @@ const CardWithChart: React.FC<CardWithChartProps> = ({chartType, chartData, x, y
             <Visualization chartType={chartType} chartData={chartData}/>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-              <QueryField query={query} />
+              <QueryField query={query} onSubmit={onEditChart}/>
             </CustomTabPanel>
             <CustomModal onUpdate={onEditChart} id={id}></CustomModal>
           </CardContent>
