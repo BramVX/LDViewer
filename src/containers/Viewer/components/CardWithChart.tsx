@@ -6,6 +6,7 @@ import CustomTabPanel from './CustomTabPanel';
 import QueryField from './QueryField';
 import CustomModal from './Modal/CustomModal';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import Visualization from './Visualization';
 
 function a11yProps(index: number) {
   return {
@@ -16,7 +17,7 @@ function a11yProps(index: number) {
 
 interface CardWithChartProps {
   chartType: any;
-  data: any;
+  chartData: any;
   x: string;
   y: string;
   query: string;
@@ -46,11 +47,7 @@ const CardWithChart: React.FC<CardWithChartProps> = ({chartType, data, x, y, que
               </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
-            <Chart
-                chartType={chartType}
-                data={data}
-                legendToggle
-            />
+            <Visualization chartType={chartType} chartData={chartData}/>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
               <QueryField query={query} />
