@@ -1,12 +1,18 @@
 import { QueryEngine } from "@comunica/query-sparql";
 import React from "react";
 
+interface QueryProps {
+    query: string;
+    source: string;
+    chartStrategy: ChartStrategy;
+}
 
-const chartData = ({query, source, chartType}) => {
+const chartData = ({query, source, chartStrategy}) => {
+
         React.useEffect(() => {
             const fetchData = async () => {
             try{
-                const formattedData = [];
+                let formattedData = [];
                 const bindings = await executeQuery(query, source);
 
                 console.log("Bindings: ", bindings);
@@ -21,27 +27,7 @@ const chartData = ({query, source, chartType}) => {
 
                     console.log(bindings);
 
-
-                    for (const [ key, value ] of bindings) {
-                        if(chartType == "GeoChart"){
-                            if(formattedData.length <= 0){
-                                formattedData.push(["longitude", "latitude"])
-                            }
-                            const [longitude, latitude] = key[1].value.slice(6, -1).split(" ");
-                            formattedData.push([latitude, longitude])
-                        }else if (chartType == "BarChart"){
-                            if(formattedData.length <= 0){
-                                formattedData.push([key[0].value, value[0].value])
-                            }
-                            formattedData.push([key[1].value, parseInt(value[1].value)])
-                        }
-
-                        //Different strategies for different charttypes:
-                        //Barchart(string and int):
-                        //formattedData.push([key[1].value, parseInt(value[1].value)])
-                        //Geochart(point and html):
-                        //formattedData.push([key[1].value], value[1].value)
-                    }
+                    formattedData = chartStrategy.formatData(bindings);
 
                     console.log(formattedData);
                     /*
@@ -58,30 +44,15 @@ const chartData = ({query, source, chartType}) => {
             };
 
             fetchData();
-         }, [query, source, chartType]);
+         }, [query, source, chartStrategy]);
 
          return null;
 }
 
-async function fetchChartData(query, source, chartType){
-    const formattedData = [];
+async function fetchChartData(query, source, chartStrategy){
     const bindings = await executeQuery(query, source);
     if(bindings.length > 0){
-        for (const [ key, value ] of bindings) {
-            if(chartType == "GeoChart"){
-                if(formattedData.length <= 0){
-                    formattedData.push(["longitude", "latitude"])
-                }
-                const [longitude, latitude] = key[1].value.slice(6, -1).split(" ");
-                    formattedData.push([latitude, longitude])
-                }else if (chartType == "BarChart"){
-                    if(formattedData.length <= 0){
-                        formattedData.push([key[0].value, value[0].value])
-                    }
-                    formattedData.push([key[1].value, parseInt(value[1].value)])
-                }
-            }
-        return formattedData;
+        return chartStrategy.formatData(bindings)
     }
     return null;
 }
