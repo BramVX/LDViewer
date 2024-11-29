@@ -8,6 +8,7 @@ import CustomModal from './components/Modal/CustomModal';
 import ChartData, { fetchChartData } from './Query';
 import QueryBuilder from './QueryBuilder';
 import CardWithChart from './components/CardWithChart';
+import ChartStrategies from './ChartTypes/ChartStrategies';
 
 const ChartContainer = ({cards, setCards}) => {
 
@@ -26,7 +27,7 @@ const ChartContainer = ({cards, setCards}) => {
       const id = cards ? JSON.parse(localStorage.getItem("cards")).length : 0;
 
       console.log("new ID: ", id)
-      const newCard = { chartType, queryresult, x, y, query, id};
+      const newCard = { chartType, queryresult, x, y, query, id, source};
 
       if(cards != null){
         setCards([...cards, newCard]);
@@ -35,19 +36,31 @@ const ChartContainer = ({cards, setCards}) => {
       }
     }
 
-    async function EditChartInDashboard({xOption, yOption, chartStrategy, source, id}){
+    async function EditChartInDashboard({chartOptions, chartStrategy, source, id}){
       const chartType = chartStrategy.getChartType();
-      const query = chartStrategy.buildQuery([xOption, yOption]);
+      const query = chartStrategy.buildQuery(chartOptions);
       const queryresult = await fetchChartData( query, source,  chartStrategy);
-      const x = xOption.split("/").pop();
-      const y = yOption.split("/").pop();
-      const editedCard = {chartType, queryresult, x, y, query, id};
+      const x = chartOptions[0].split("/").pop();
+      const y = chartOptions[1].split("/").pop();
+      const editedCard = {chartType, queryresult, x, y, query, id, source};
 
       if(~id){
         const updatedCards = [...cards];
         updatedCards[id] = editedCard;
         setCards(updatedCards);
       }
+      console.log("NEW CARDS AFTER EDIT ", cards);
+    }
+
+    async function EditChartWithQuery({newQuery, id}){
+      console.log(id);
+      const updatedCards = [...cards];
+      const chartStrategy = { getChartType: () => updatedCards[id].chartType, buildQuery: () => newQuery };
+      console.log("card", updatedCards[id]);
+      const queryresult = await fetchChartData( newQuery, updatedCards[id].source,  ChartStrategies[updatedCards[id].chartType]);
+      updatedCards[id].query = newQuery;
+      updatedCards[id].queryresult = queryresult;
+      setCards(updatedCards);
       console.log("NEW CARDS AFTER EDIT ", cards);
     }
 
@@ -104,7 +117,7 @@ const ChartContainer = ({cards, setCards}) => {
         {cards != null && cards.map((items) => {
           console.log("loop: ", items, cards)
           return (
-              <CardWithChart chartType={items.chartType} data={items.queryresult} x={items.x} y={items.y} query={items.query} onEditChart={EditChartInDashboard} onDeleteChart={DeleteChartFromDashboard} id={items.id}/>
+              <CardWithChart chartType={items.chartType} chartData={items.queryresult} x={items.x} y={items.y} query={items.query} onEditChart={EditChartInDashboard} onEditQuery={EditChartWithQuery} onDeleteChart={DeleteChartFromDashboard} id={items.id}/>
           );
         })}
       <AddButton/>

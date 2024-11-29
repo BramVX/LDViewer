@@ -9,3 +9,4 @@ interface ChartStrategy {
 
     buildQuery(values) : string;
 }
+

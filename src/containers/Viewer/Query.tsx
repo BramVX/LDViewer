@@ -50,6 +50,7 @@ const chartData = ({query, source, chartStrategy}) => {
 }
 
 async function fetchChartData(query, source, chartStrategy){
+    console.log("the strat used for fetch and format:", chartStrategy.getChartType());
     const bindings = await executeQuery(query, source);
     if(bindings.length > 0){
         return chartStrategy.formatData(bindings)
