@@ -4,7 +4,7 @@ import { MapContainer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
 
-export default function yes(){
+export default function ContentDemo(){
     const [chartData, setChartData] = React.useState([]);
 
   //add arguments for title and extra text

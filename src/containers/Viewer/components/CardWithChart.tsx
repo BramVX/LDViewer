@@ -38,8 +38,6 @@ const CardWithChart: React.FC<CardWithChartProps> = ({chartType, chartData, x, y
     onEditQuery({newQuery, id});
   }
 
-  console.log("THE ID: ", id);
-
   return (
     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <Card variant="outlined">

@@ -2,11 +2,8 @@ import { executeQuery } from "#containers/Viewer/Query.tsx";
 import { Box, Button, FormControl, InputLabel, MenuItem, Modal, Select, TextField, Typography } from "@mui/material";
 import React, { createElement, useEffect, useImperativeHandle, useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
-import BarChartStrategy from "#containers/Viewer/ChartTypes/BarChart.tsx";
-import GeoChartStrategy from "#containers/Viewer/ChartTypes/GeoChart.tsx";
-import PieChartStrategy from "#containers/Viewer/ChartTypes/PieChart.tsx";
 import ChartOptions from "./ChartOptions";
-import AreaChartStrategy from "#containers/Viewer/ChartTypes/AreaChart.tsx";
+import chartStrategies from "#containers/Viewer/ChartTypes/ChartStrategies.tsx";
 
 
 const style = {
@@ -88,18 +85,8 @@ const CustomModal = ({onUpdate, id}) => {
     }
 
     function chooseStrategy(chartType){
-      switch(chartType){
-        case "BarChart":
-         return new BarChartStrategy();
-        case "GeoChart":
-         return new GeoChartStrategy();
-        case "PieChart":
-         return new PieChartStrategy();
-        case "AreaChart":
-          return new AreaChartStrategy();
-        default:
-         return new BarChartStrategy();
-      }
+      const Strategy = chartStrategies[chartType] || chartStrategies["BarChart"];
+      return new Strategy();
     }
 
 
