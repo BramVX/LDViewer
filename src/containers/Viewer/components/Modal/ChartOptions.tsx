@@ -1,8 +1,4 @@
-import AreaChartStrategy from "#containers/Viewer/ChartTypes/AreaChart.tsx";
-import BarChartStrategy from "#containers/Viewer/ChartTypes/BarChart.tsx";
 import chartStrategies from "#containers/Viewer/ChartTypes/ChartStrategies.tsx";
-import GeoChartStrategy from "#containers/Viewer/ChartTypes/GeoChart.tsx";
-import PieChartStrategy from "#containers/Viewer/ChartTypes/PieChart.tsx";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import React, { useState } from "react";
 
