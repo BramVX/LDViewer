@@ -7,6 +7,7 @@ import Grid from '@mui/material/Grid2';
 import CustomModal from './components/Modal/CustomModal';
 import { fetchChartData } from './Query';
 import CardWithChart from './components/CardWithChart';
+import chartStrategies from './ChartTypes/ChartStrategies';
 
 const DynamicDashboardContainer = ({cards, setCards}) => {
 
@@ -48,8 +49,9 @@ const DynamicDashboardContainer = ({cards, setCards}) => {
 
     async function EditChartWithQuery({newQuery, id}){
       const updatedCards = [...cards];
-      const chartStrategy = { getChartType: () => updatedCards[id].chartType, buildQuery: () => newQuery };
-      const queryresult = await fetchChartData( newQuery, updatedCards[id].source,  chartStrategy[updatedCards[id].chartType]);
+      const chartStrategy = chartStrategies[updatedCards[id].chartType];
+      console.log("STRATEGY", chartStrategy);
+      const queryresult = await fetchChartData( newQuery, updatedCards[id].source,  chartStrategy);
       updatedCards[id].query = newQuery;
       updatedCards[id].queryresult = queryresult;
       setCards(updatedCards);
