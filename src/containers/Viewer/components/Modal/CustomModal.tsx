@@ -28,10 +28,6 @@ const CustomModal = ({onUpdate, id}) => {
     const [predicates, setPredicates] = useState([]);
     const [chartOptions, setChartOptions] = useState([]);
 
-    useEffect(() => {
-      console.log("Chart type chosen", chartType);
-    }, [chartType]);
-
     function handleSourceChange(e) {
       var query = `SELECT DISTINCT ?predicate {
         ?s ?predicate ?o}
@@ -67,6 +63,11 @@ const CustomModal = ({onUpdate, id}) => {
     const handleOptionsChange = (options) => {
       setChartOptions(options);
       console.log(options);
+    }
+
+    const handleChartTypeChange = (chartType) => {
+      setChartType(chartType);
+      console.log("Chart type chosen", chartType);
     }
 
     function handleSubmit(event){
@@ -122,7 +123,7 @@ const CustomModal = ({onUpdate, id}) => {
                       <Select
                         labelId="demo-simple-select-filled-label"
                         id="demo-simple-select-filled"
-                        onChange={event => setChartType(event.target.value)} value={chartType}>
+                        onChange={event => handleChartTypeChange(event.target.value)} value={chartType}>
                         <MenuItem value={"BarChart"}>BarChart</MenuItem>
                         <MenuItem value={"GeoChart"}>GeoChart</MenuItem>
                         <MenuItem value={"PieChart"}>PieChart</MenuItem>
