@@ -70,7 +70,7 @@ export interface WizardAppConfig {
 
   getShaclShapes: (resourceClass?: string) => Promise<ShaclShapeMeta[]>
 }
-export type PublishElement = "download" | "triplyDB";
+export type PublishElement = "download" | "triplyDB" | "ldViewer";
 
 const config = window.wizardConfig;
 
@@ -90,7 +90,7 @@ export const wizardAppConfig: WizardAppConfig = {
   /** App
    *
    */
-  publishOrder: ["download", "triplyDB"],
+  publishOrder: ["download", "triplyDB", "ldViewer"],
   triplyDbInstances: config.triplyDbInstances || [],
   defaultBaseIri: config.defaultBaseIri || "https://data.pldn.nl/",
   exampleCsv: config.exampleCSV || undefined,

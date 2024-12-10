@@ -9,10 +9,11 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { type Router, type Navigation, PageContainerToolbar, PageContainer } from '@toolpad/core';
-import { Button, Input, Menu, MenuItem, Paper, styled } from '@mui/material';
+import { Button, Input, Menu, MenuItem, Paper, styled, SvgIcon } from '@mui/material';
 import { useDemoRouter } from '@toolpad/core/internal';
 import PageContent from './Content';
 import DownloadMenu from './components/DownloadMenu';
+import faviCon from '../../../img/LDWizard-square.png';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -74,6 +75,18 @@ const NAVIGATION: Navigation = [
     title: 'Integrations',
     icon: <LayersIcon />,
   },
+  {
+    kind: 'divider',
+  },
+  {
+    kind: 'header',
+    title: 'LDWizard',
+  },
+  {
+    segment: 'ldwizard',
+    title: 'LDWizard',
+    icon: <img src="../../../img/LDWizard-square.png"/>
+  }
 ];
 
 const demoTheme = createTheme({
