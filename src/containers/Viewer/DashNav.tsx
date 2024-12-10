@@ -5,12 +5,26 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import DescriptionIcon from '@mui/icons-material/Description';
 import LayersIcon from '@mui/icons-material/Layers';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { type Router, type Navigation, PageContainerToolbar, PageContainer } from '@toolpad/core';
-import { Button, Paper } from '@mui/material';
+import { Button, Input, Menu, MenuItem, Paper, styled } from '@mui/material';
 import { useDemoRouter } from '@toolpad/core/internal';
 import PageContent from './Content';
+import DownloadMenu from './components/DownloadMenu';
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 const NAVIGATION: Navigation = [
   {
@@ -78,23 +92,37 @@ const demoTheme = createTheme({
   },
 });
 
+function importData(file) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    if (typeof e.target.result === 'string') {
+      localStorage.setItem('cards', e.target.result);
+      location.reload();
+    }
+  }
+  reader.readAsText(file[0]);
+}
+
 
 // preview-start
 function PageToolbar() {
   return (
     <PageContainerToolbar>
-      <Button startIcon={<FileDownloadIcon />} color="inherit">
-        Export
+      <DownloadMenu />
+      <Button startIcon={<CloudUploadIcon />} color="inherit" component="label"
+      role={undefined}
+      tabIndex={-1}>
+        Import
+        <VisuallyHiddenInput
+          type="file"
+          onChange={(event) => importData(event.target.files)}
+        />
       </Button>
     </PageContainerToolbar>
   );
 }
-// preview-end
-
-
 
 export default function DashboardLayoutBasic() {
-
   //const [pathname, setPathname] = React.useState('/dashboard');
 
   const router = useDemoRouter('/dashboard');
@@ -122,3 +150,4 @@ export default function DashboardLayoutBasic() {
 
   );
 }
+

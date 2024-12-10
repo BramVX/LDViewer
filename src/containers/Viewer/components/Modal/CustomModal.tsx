@@ -86,7 +86,7 @@ const CustomModal = ({onUpdate, id}) => {
 
     function chooseStrategy(chartType){
       const Strategy = chartStrategies[chartType] || chartStrategies["BarChart"];
-      return new Strategy();
+      return Strategy;
     }
 
 
