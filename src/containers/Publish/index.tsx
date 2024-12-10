@@ -10,6 +10,7 @@ import { currentTokenState } from "../../state/clientJs.ts";
 import DownloadResults from "./DownloadResults.tsx";
 import { wizardAppConfig, PublishElement } from "../../config/index.ts";
 import { Matrix } from "../../Definitions.ts";
+import LDViewerReference from "./LDViewerReference.tsx";
 interface Props { }
 export const Step = 3;
 const Publish: React.FC<Props> = ({ }) => {
@@ -320,6 +321,9 @@ function LinearProgressWithLabel(props: LinearProgressProps & { value: number })
           <TriplyDBUpload transformationResult={transformationResult} refinedCsv={refinedCsv} />
         </React.Suspense>
       </ErrorBoundary>
+    ),
+    ldViewer: (
+      <LDViewerReference/>
     ),
   };
   return (

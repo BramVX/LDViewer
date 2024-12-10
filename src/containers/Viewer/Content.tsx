@@ -38,6 +38,8 @@ export default function PageContent({ pathname }: { pathname: string }) {
             return(<DDashboard cards={cards} setCards={setCards}/>);
         case "/contentdemo":
             return(<CDemo/>)
+        case "/ldwizard":
+            window.location.href = window.location.href.split("/")[0] + "/1";
         default:
             break;
     };
