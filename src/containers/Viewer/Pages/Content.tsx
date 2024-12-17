@@ -2,6 +2,7 @@ import * as React from 'react';
 import DDashboard from './DynamicDashboard.tsx';
 import CDemo from '../ContentDemo.tsx';
 import { useEffect, useState } from 'react';
+import Welcome from './Guide.tsx';
 
 function PageContent({ pathname }: Readonly<{ pathname: string }>) {
     const storedCards = JSON.parse(localStorage.getItem("cards"));
@@ -29,6 +30,8 @@ function PageContent({ pathname }: Readonly<{ pathname: string }>) {
     }, [cards])
 
     switch(pathname) {
+        case "/guide":
+            return(<Welcome dataset={dataset}/>);
         case "/dashboard":
             return(<DDashboard dataset={dataset} cards={cards} setCards={setCards}/>);
         case "/contentdemo":

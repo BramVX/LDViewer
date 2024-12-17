@@ -5,13 +5,16 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { type Navigation, PageContainerToolbar, PageContainer } from '@toolpad/core';
-import { Button, Paper, styled, Tooltip } from '@mui/material';
+import { Button, IconButton, Paper, styled, Tooltip } from '@mui/material';
 import { useDemoRouter } from '@toolpad/core/internal';
-import PageContent from './(dashboard)/Content';
+import PageContent from './Pages/Content';
 import DownloadMenu from './components/DownloadMenu';
 import DatasetLinkedIcon from '@mui/icons-material/DatasetLinked';
 import DatasetIcon from '@mui/icons-material/Dataset';
 import { executeQuery } from './Data/DataService';
+import ContactSupportIcon from '@mui/icons-material/ContactSupport';
+import ArticleIcon from '@mui/icons-material/Article';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -31,6 +34,11 @@ const NAVIGATION: Navigation = [
     title: 'Main items',
   },
   {
+    segment: 'guide',
+    title: 'Guide',
+    icon: <ContactSupportIcon />,
+  },
+  {
     segment: 'dashboard',
     title: 'Dashboard',
     icon: <DashboardIcon />,
@@ -38,7 +46,7 @@ const NAVIGATION: Navigation = [
   {
     segment: 'demo',
     title: 'Demo',
-    icon: <DashboardIcon />,
+    icon: <ArticleIcon />,
   },
   {
     kind: 'divider',
@@ -50,7 +58,7 @@ const NAVIGATION: Navigation = [
   {
     segment: 'ldwizard',
     title: 'LDWizard',
-    icon: <img src="../../../img/LDWizard-square.png" alt="LDWizard-logo"/>
+    icon: <ArrowBackIcon/>
   }
 ];
 
@@ -104,35 +112,44 @@ function PageToolbar() {
     }
   }
 
-  function checkDataset(url,  retryCount = 1) {
-    var query = `SELECT DISTINCT ?predicate {
-      ?s ?predicate ?o}
-      ORDER BY ?predicate`;
+  function checkDataset(url, retryCount = 3) {
+    const query = `SELECT DISTINCT ?predicate {
+      ?s ?predicate ?o
+    } ORDER BY ?predicate`;
   
-    executeQuery(query, dataset)
-    .then(() => {
-      localStorage.setItem('dataset', url);
-      setDataset(url);
-      setColor("success");
-      setTooltip(`${dataset} is linked.`);
-    }).catch((error) => {
-      if (retryCount > 0) {
-        setTimeout(() => {
-          checkDataset(url, retryCount - 1);
-        }, 1000);
-      } else {
-        localStorage.setItem('dataset', url);
-        setDataset(url);
-        setColor("error");
-        setTooltip("Dataset is not reachable: " + error);
-      }
-    });
+    const attemptQuery = (remainingRetries) => {
+      executeQuery(query, url)
+        .then(() => {
+          localStorage.setItem('dataset', url);
+          setDataset(url);
+          setColor("success");
+          setTooltip(`${url} is linked.`);
+        })
+        .catch((error) => {
+          if (remainingRetries > 0) {
+            setTimeout(() => {
+              attemptQuery(remainingRetries - 1);
+            }, 2000);
+          } else {
+            localStorage.setItem('dataset', url);
+            setDataset(url);
+            setColor("error");
+            setTooltip("Dataset is not reachable: " + error);
+          }
+        });
+    };
+
+    attemptQuery(retryCount);
   }
 
   return (
     <PageContainerToolbar>
       <Tooltip title={tooltip}>
-        <Button startIcon={dataset ? <DatasetLinkedIcon /> : <DatasetIcon />} color={color} onClick={linkDataset} />
+        <IconButton color={color} onClick={linkDataset}>
+          {
+            dataset ? <DatasetLinkedIcon /> : <DatasetIcon />
+          }
+        </IconButton>
       </Tooltip>
       <DownloadMenu />
       <Button startIcon={<CloudUploadIcon />} color="inherit" component="label"
@@ -149,7 +166,7 @@ function PageToolbar() {
 }
 
 function DashboardLayoutBasic() {
-  const router = useDemoRouter('/dashboard');
+  const router = useDemoRouter('/guide');
 
   return (
     <AppProvider
@@ -162,7 +179,7 @@ function DashboardLayoutBasic() {
       theme={demoTheme}
     >
       <DashboardLayout>
-        <Paper sx={{ width: '90%', alignContent: 'center', display: 'inline' }}>
+        <Paper sx={{ width: '100%', alignContent: 'center', display: 'inline' }}>
           <PageContainer slots={{ toolbar: PageToolbar }}>
             <PageContent pathname={router.pathname}/>
           </PageContainer>

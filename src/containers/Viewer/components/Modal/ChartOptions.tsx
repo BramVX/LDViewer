@@ -27,7 +27,14 @@ const ChartOptions = ({chartType, predicates, onOptionsChange}) => {
         {chartOptions.map((option, index) => (
             <FormControl sx={{ m: 1, minWidth: 120 }}>
             <InputLabel id={option}>{option}</InputLabel>
-            <Select id={option} onChange={handleChange(index)} value={options[index]} label={option}>
+            <Select 
+                id={option} 
+                onChange={handleChange(index)} 
+                value={options[index]} 
+                label={option} 
+                required={index === 0}
+                fullWidth
+                >
                 {predicates.map((predicate) => (
                     <MenuItem key={predicate.value} value={predicate.value}>
                         {predicate.label}

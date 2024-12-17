@@ -18,6 +18,7 @@ function a11yProps(index: number) {
 }
 
 interface CardWithChartProps {
+  dataset: string;
   chartType: any;
   chartData: any;
   x: string;
@@ -29,7 +30,7 @@ interface CardWithChartProps {
   id: number;
 }
 
-const CardWithChart: React.FC<CardWithChartProps> = ({chartType, chartData, x, y, query, onEditChart, onEditQuery , onDeleteChart, id}) => {
+const CardWithChart: React.FC<CardWithChartProps> = ({dataset, chartType, chartData, x, y, query, onEditChart, onEditQuery , onDeleteChart, id}) => {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -65,7 +66,7 @@ const CardWithChart: React.FC<CardWithChartProps> = ({chartType, chartData, x, y
             <CustomTabPanel value={value} index={1}>
               <QueryField query={query} onSubmit={handleQuerySubmit}/>
             </CustomTabPanel>
-            <CustomModal onUpdate={onEditChart} id={id}></CustomModal>
+            <CustomModal dataset={dataset} onUpdate={onEditChart} id={id}></CustomModal>
             <Button onClick={() => onDeleteChart(id)} variant="contained" endIcon={<RemoveCircleOutlineIcon/>}>Delete chart</Button>
           </CardContent>
         </Card>
