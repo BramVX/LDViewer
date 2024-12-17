@@ -3,7 +3,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import CloseIcon from '@mui/icons-material/Close';
 import React from "react";
 
-export default function DashboardLayoutBasic() {
+function DashboardLayoutBasic() {
     const [active, setActive] = React.useState(false);
     const [severity, setSeverity] = React.useState<AlertColor>("error");
     const [message, setMessage] = React.useState("Something went wrong with making the link.");
@@ -103,3 +103,5 @@ export default function DashboardLayoutBasic() {
         </>
     )
 }
+
+export default DashboardLayoutBasic;

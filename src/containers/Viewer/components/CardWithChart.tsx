@@ -7,6 +7,8 @@ import QueryField from './QueryField';
 import CustomModal from './Modal/CustomModal';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import Visualization from './Visualization';
+import LeafletAdapter from '../Visualization/LeafletAdapter';
+import GoogleChartsAdapter from '../Visualization/GoogleChartsAdapter';
 
 function a11yProps(index: number) {
   return {
@@ -38,6 +40,14 @@ const CardWithChart: React.FC<CardWithChartProps> = ({chartType, chartData, x, y
     onEditQuery({newQuery, id});
   }
 
+  let adapter;
+
+  if(chartType === "GeoChart") {
+    adapter = new LeafletAdapter(chartData);
+  } else{
+    adapter = new GoogleChartsAdapter(chartData, {chartType: chartType});
+  }
+
   return (
     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <Card variant="outlined">
@@ -50,7 +60,7 @@ const CardWithChart: React.FC<CardWithChartProps> = ({chartType, chartData, x, y
               </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
-            <Visualization chartType={chartType} chartData={chartData}/>
+            <Visualization adapter={adapter}/>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
               <QueryField query={query} onSubmit={handleQuerySubmit}/>

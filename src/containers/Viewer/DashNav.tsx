@@ -1,19 +1,17 @@
 import * as React from 'react';
-import { createTheme, useTheme } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import DescriptionIcon from '@mui/icons-material/Description';
-import LayersIcon from '@mui/icons-material/Layers';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
-import { type Router, type Navigation, PageContainerToolbar, PageContainer } from '@toolpad/core';
-import { Button, Input, Menu, MenuItem, Paper, styled, SvgIcon } from '@mui/material';
+import { type Navigation, PageContainerToolbar, PageContainer } from '@toolpad/core';
+import { Button, Paper, styled, Tooltip } from '@mui/material';
 import { useDemoRouter } from '@toolpad/core/internal';
-import PageContent from './Content';
+import PageContent from './(dashboard)/Content';
 import DownloadMenu from './components/DownloadMenu';
-import faviCon from '../../../img/LDWizard-square.png';
+import DatasetLinkedIcon from '@mui/icons-material/DatasetLinked';
+import DatasetIcon from '@mui/icons-material/Dataset';
+import { executeQuery } from './Data/DataService';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -43,39 +41,6 @@ const NAVIGATION: Navigation = [
     icon: <DashboardIcon />,
   },
   {
-    segment: 'contentdemo',
-    title: 'ContentDemo'
-  },
-  {
-    kind: 'divider',
-  },
-  {
-    kind: 'header',
-    title: 'Analytics',
-  },
-  {
-    segment: 'reports',
-    title: 'Reports',
-    icon: <BarChartIcon />,
-    children: [
-      {
-        segment: 'sales',
-        title: 'Sales',
-        icon: <DescriptionIcon />,
-      },
-      {
-        segment: 'traffic',
-        title: 'Traffic',
-        icon: <DescriptionIcon />,
-      },
-    ],
-  },
-  {
-    segment: 'integrations',
-    title: 'Integrations',
-    icon: <LayersIcon />,
-  },
-  {
     kind: 'divider',
   },
   {
@@ -85,7 +50,7 @@ const NAVIGATION: Navigation = [
   {
     segment: 'ldwizard',
     title: 'LDWizard',
-    icon: <img src="../../../img/LDWizard-square.png"/>
+    icon: <img src="../../../img/LDWizard-square.png" alt="LDWizard-logo"/>
   }
 ];
 
@@ -116,11 +81,59 @@ function importData(file) {
   reader.readAsText(file[0]);
 }
 
-
-// preview-start
 function PageToolbar() {
+  const [dataset, setDataset] = React.useState(localStorage.getItem('dataset'));
+  const [color, setColor] = React.useState("warning");
+  const [tooltip, setTooltip] = React.useState("Link a dataset");
+
+  React.useEffect(() => {
+    if(dataset){
+      checkDataset(dataset);
+    }
+  } ,[]);
+
+  function linkDataset() {
+    const url = prompt("Please enter SPARQL endpoint URL of the dataset to link and leave empty to unlink:");
+    if (url) {
+      checkDataset(url);
+    } else{
+      localStorage.removeItem('dataset');
+      setDataset(null);
+      setColor("warning");
+      setTooltip("Link a dataset");
+    }
+  }
+
+  function checkDataset(url,  retryCount = 1) {
+    var query = `SELECT DISTINCT ?predicate {
+      ?s ?predicate ?o}
+      ORDER BY ?predicate`;
+  
+    executeQuery(query, dataset)
+    .then(() => {
+      localStorage.setItem('dataset', url);
+      setDataset(url);
+      setColor("success");
+      setTooltip(`${dataset} is linked.`);
+    }).catch((error) => {
+      if (retryCount > 0) {
+        setTimeout(() => {
+          checkDataset(url, retryCount - 1);
+        }, 1000);
+      } else {
+        localStorage.setItem('dataset', url);
+        setDataset(url);
+        setColor("error");
+        setTooltip("Dataset is not reachable: " + error);
+      }
+    });
+  }
+
   return (
     <PageContainerToolbar>
+      <Tooltip title={tooltip}>
+        <Button startIcon={dataset ? <DatasetLinkedIcon /> : <DatasetIcon />} color={color} onClick={linkDataset} />
+      </Tooltip>
       <DownloadMenu />
       <Button startIcon={<CloudUploadIcon />} color="inherit" component="label"
       role={undefined}
@@ -135,13 +148,10 @@ function PageToolbar() {
   );
 }
 
-export default function DashboardLayoutBasic() {
-  //const [pathname, setPathname] = React.useState('/dashboard');
-
+function DashboardLayoutBasic() {
   const router = useDemoRouter('/dashboard');
 
   return (
-    // preview-start
     <AppProvider
       navigation={NAVIGATION}
       branding={{
@@ -159,8 +169,8 @@ export default function DashboardLayoutBasic() {
         </Paper>
       </DashboardLayout>
     </AppProvider>
-    // preview-end
-
   );
 }
+
+export default DashboardLayoutBasic;
 

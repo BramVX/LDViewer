@@ -14,7 +14,6 @@ const ChartOptions = ({chartType, predicates, onOptionsChange}) => {
     const [options, setOptions] = useState(() => chartOptions.map(() => ""));
 
     const handleChange = (index) => (event) => {
-        console.log("I change");
         setOptions((prevOptions) => {
             const newOptions = [...prevOptions];
             newOptions[index] = event.target.value;
@@ -39,23 +38,6 @@ const ChartOptions = ({chartType, predicates, onOptionsChange}) => {
         ))}
         </div>
     );
-
-    /*
-    <Select id="x-axis" onChange={event => setXOption(event.target.value)} value={xOption}>
-                      {xOptions.map(option => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    <Select id="y-axis" onChange={event => setYOption(event.target.value)} value={yOption}>
-                      {yOptions.map(option => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    */
 }
 
 export default ChartOptions;

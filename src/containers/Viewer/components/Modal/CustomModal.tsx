@@ -1,4 +1,4 @@
-import { executeQuery } from "#containers/Viewer/Query.tsx";
+import { executeQuery } from "#containers/Viewer/Data/DataService.tsx";
 import { Box, Button, FormControl, InputLabel, MenuItem, Modal, Select, TextField, Typography } from "@mui/material";
 import React, { createElement, useEffect, useImperativeHandle, useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
@@ -18,32 +18,34 @@ const style = {
   p: 4,
 };
 
-const CustomModal = ({onUpdate, id}) => {
+const CustomModal = ({dataset, onUpdate, id}) => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [chartType, setChartType] = useState('');
-    const [source, setSource] = useState('');
+    const [source, setSource] = useState(dataset);
     const [color, setColor] = useState<"success" | "warning" | "error" | "primary" | "secondary" | "info">("primary");
     const [predicates, setPredicates] = useState([]);
     const [chartOptions, setChartOptions] = useState([]);
+
+    useEffect(() => {
+      if(dataset){
+        handleSourceChange({target: {value: dataset}});
+      }
+    }, []);
 
     function handleSourceChange(e) {
       var query = `SELECT DISTINCT ?predicate {
         ?s ?predicate ?o}
         ORDER BY ?predicate`;
       var endpoint = e.target.value;
-
-      console.log(endpoint);
     
       executeQuery(query, endpoint)
       .then((result) => {
-        console.log("Query passed with: ", result);
         fillMenu(result);
         setColor("success");
         setSource(endpoint);
       }).catch((error) => {
-        console.log("Query failed with: ", error);
         setColor("warning");
       });
 
@@ -62,25 +64,18 @@ const CustomModal = ({onUpdate, id}) => {
 
     const handleOptionsChange = (options) => {
       setChartOptions(options);
-      console.log(options);
     }
 
     const handleChartTypeChange = (chartType) => {
       setChartType(chartType);
-      console.log("Chart type chosen", chartType);
     }
 
     function handleSubmit(event){
       event.preventDefault(); 
-      console.log("Type:", chartType)
       const chartStrategy = chooseStrategy(chartType);
       if(id == null){
-        console.log("ADDING CHART");
-        console.log(chartStrategy);
-        console.log(chartOptions);
         onUpdate({chartOptions,chartStrategy,source});
       }else{
-        console.log("EDITING CHART");
         onUpdate({chartOptions,chartStrategy,source, id});
       }
     }
@@ -116,7 +111,7 @@ const CustomModal = ({onUpdate, id}) => {
               <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                   <form onSubmit={handleSubmit}>
                   <FormControl>
-                    <TextField id="filled-required" label="Source" variant="filled" onChange={handleSourceChange} color={color}/>
+                    <TextField id="filled-required" label="Source" variant="filled" onChange={handleSourceChange} color={color} value={dataset}/>
                   </FormControl>
                   <FormControl sx={{ m: 1, minWidth: 120 }}>
                     <InputLabel id="chartType">Chart type</InputLabel>

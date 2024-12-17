@@ -1,4 +1,4 @@
-export default class BarChartStrategy implements ChartStrategy {
+class BarChartStrategy implements ChartStrategy {
     chartType: string = "BarChart";
     dataOptions: string[] = ["text", "numeric"];
 
@@ -20,21 +20,6 @@ export default class BarChartStrategy implements ChartStrategy {
         }
         return formattedData;
     }
-
-    buildQuery(values) : string{
-        var x = values[0].split("/").pop();
-        var y = values[1].split("/").pop();
-      
-        var query = `SELECT ?`+x+` ?`+y+` 
-          WHERE {
-            ?o <`+values[0]+`> ?`+x+` ;
-            <`+values[1]+`> ?`+y+` 
-          }
-          ORDER BY ASC(?`+y+`)
-          limit 5`;
-      
-        console.log("Query that was made: ", query);
-      
-        return query;
-      }
 }
+
+export default BarChartStrategy;

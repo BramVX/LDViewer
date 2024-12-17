@@ -1,12 +1,13 @@
 import * as React from 'react';
 import DDashboard from './DynamicDashboard.tsx';
-import CDemo from './ContentDemo.tsx';
+import CDemo from '../ContentDemo.tsx';
 import { useEffect, useState } from 'react';
 
-export default function PageContent({ pathname }: { pathname: string }) {
-    console.log(localStorage.getItem("cards"));
+function PageContent({ pathname }: Readonly<{ pathname: string }>) {
     const storedCards = JSON.parse(localStorage.getItem("cards"));
     const [cards, setCards] = useState(storedCards);
+    const dataset = localStorage.getItem("dataset");
+    console.log(dataset);
 
     const getDataFromUrl = () => { 
         const queryParameters = new URLSearchParams(window.location.search);
@@ -25,17 +26,11 @@ export default function PageContent({ pathname }: { pathname: string }) {
 
     useEffect(() => {
         localStorage.setItem("cards", JSON.stringify(cards))
-        console.log("localstorage updated!");
-        console.log(JSON.parse(localStorage.getItem("cards")))
     }, [cards])
 
     switch(pathname) {
-        /*
-        case "/demo":
-            return(<Demo />);
-            */
         case "/dashboard":
-            return(<DDashboard cards={cards} setCards={setCards}/>);
+            return(<DDashboard dataset={dataset} cards={cards} setCards={setCards}/>);
         case "/contentdemo":
             return(<CDemo/>)
         case "/ldwizard":
@@ -44,3 +39,5 @@ export default function PageContent({ pathname }: { pathname: string }) {
             break;
     };
 }
+
+export default PageContent;
