@@ -1,7 +1,6 @@
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField/TextField";
 import React, { useState } from "react";
-import buildQuery from "../QueryBuilder";
 
 function QueryField({query, onSubmit}) {
 

@@ -15,7 +15,8 @@ const LDViewerReference = () => {
         <CardContent>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             Once your data is published to TriplyDB and set to public, you can view it in the LDViewer.
-            The LDViewer is a tool that allows you to explore Linked Data in a user-friendly way. It helps you visualize and explore your Linked Data.
+            The LDViewer is a tool that allows you to explore Linked Data in a user-friendly way. It helps you visualize and explore your Linked Data. 
+            Please copy the SPARQL endpoint url of your published dataset to be able to use it later in the LDViewer.
           </Typography>
           
         </CardContent>

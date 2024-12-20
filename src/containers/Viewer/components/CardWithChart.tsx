@@ -7,6 +7,8 @@ import QueryField from './QueryField';
 import CustomModal from './Modal/CustomModal';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import Visualization from './Visualization';
+import LeafletAdapter from '../Visualization/LeafletAdapter';
+import GoogleChartsAdapter from '../Visualization/GoogleChartsAdapter';
 
 function a11yProps(index: number) {
   return {
@@ -16,6 +18,7 @@ function a11yProps(index: number) {
 }
 
 interface CardWithChartProps {
+  dataset: string;
   chartType: any;
   chartData: any;
   x: string;
@@ -27,7 +30,7 @@ interface CardWithChartProps {
   id: number;
 }
 
-const CardWithChart: React.FC<CardWithChartProps> = ({chartType, chartData, x, y, query, onEditChart, onEditQuery , onDeleteChart, id}) => {
+const CardWithChart: React.FC<CardWithChartProps> = ({dataset, chartType, chartData, x, y, query, onEditChart, onEditQuery , onDeleteChart, id}) => {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -36,6 +39,14 @@ const CardWithChart: React.FC<CardWithChartProps> = ({chartType, chartData, x, y
 
   const handleQuerySubmit = (newQuery) => {
     onEditQuery({newQuery, id});
+  }
+
+  let adapter;
+
+  if(chartType === "GeoChart") {
+    adapter = new LeafletAdapter(chartData);
+  } else{
+    adapter = new GoogleChartsAdapter(chartData, {chartType: chartType});
   }
 
   return (
@@ -50,12 +61,12 @@ const CardWithChart: React.FC<CardWithChartProps> = ({chartType, chartData, x, y
               </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
-            <Visualization chartType={chartType} chartData={chartData}/>
+            <Visualization adapter={adapter}/>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
               <QueryField query={query} onSubmit={handleQuerySubmit}/>
             </CustomTabPanel>
-            <CustomModal onUpdate={onEditChart} id={id}></CustomModal>
+            <CustomModal dataset={dataset} onUpdate={onEditChart} id={id}></CustomModal>
             <Button onClick={() => onDeleteChart(id)} variant="contained" endIcon={<RemoveCircleOutlineIcon/>}>Delete chart</Button>
           </CardContent>
         </Card>
