@@ -3,7 +3,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import CloseIcon from '@mui/icons-material/Close';
 import React from "react";
 
-function DashboardLayoutBasic() {
+function DashboardLayoutBasic({dashboardService}) {
     const [active, setActive] = React.useState(false);
     const [severity, setSeverity] = React.useState<AlertColor>("error");
     const [message, setMessage] = React.useState("Something went wrong with making the link.");
@@ -18,20 +18,11 @@ function DashboardLayoutBasic() {
     };
 
     function exportDataAsFile() {
-        try {
-            const file = new Blob([localStorage.getItem('cards')], {type: 'application/json'});
-            const blobUrl = URL.createObjectURL(file);
-            const link = document.createElement('a');
-            link.href = blobUrl;
-            link.download = 'cards.json';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(blobUrl);
+        if (dashboardService.exportDashboardAsFile()) {
             setSeverity("success");
             setMessage("The file has been downloaded.");
             setActive(true);
-        } catch (error) {
+        } else{
             setSeverity("error");
             setMessage("Something went wrong with making the file.");
             setActive(true);
@@ -39,24 +30,19 @@ function DashboardLayoutBasic() {
     }
 
     function exportDataAsLink() {
-        const data = window.btoa(JSON.stringify(localStorage.getItem('cards')));
-        let url = window.location.href + "?data=" + data;
-        if(url.length > 2048){
-            setSeverity("error");
-            setMessage("The URL is too long to be shared. Please export as file instead.");
-            setActive(true);
-            return;
-        } else {
+        if (dashboardService.exportDashboardAsLink()) {
             setSeverity("success");
-            setMessage("The URL has been copied to your clipboard.");
+            setMessage("The link has been copied to clipboard.");
             setActive(true);
-            navigator.clipboard.writeText(url);
+        } else{
+            setSeverity("error");
+            setMessage("Too much data to export as link.");
+            setActive(true);
         }
     }
 
     return (
         <>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Collapse in={active}>
             <Alert severity={severity}
                 action={
@@ -98,8 +84,6 @@ function DashboardLayoutBasic() {
             <MenuItem onClick={exportDataAsLink}>As link</MenuItem>
             <MenuItem onClick={exportDataAsFile}>As file</MenuItem>
         </Menu>
-        </Box>
-        
         </>
     )
 }

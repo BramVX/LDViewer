@@ -1,58 +1,108 @@
-import React from 'react';
-import { fetchChartData } from './DataService';
 import SPARQLBuilder from './SPARQLBuilder';
 import chartStrategies from '../ChartTypes/ChartStrategies';
+import DataService from './DataService';
 
 class DashboardService  {
-    async addChart({chartOptions, chartStrategy, source, cards}){
+    private cards: any;
+    private setCards: Function;
+    private dataService: any;
+
+    constructor(cards, setCards) {
+        this.cards = cards;
+        this.setCards = setCards;
+        this.dataService = new DataService();
+    }
+    
+    async addChart({chartOptions, chartStrategy, source}){
+        console.log("this:",this);
         const chartType = chartStrategy.getChartType();
         let sparqlBuilder = new SPARQLBuilder();
         const query = sparqlBuilder.buildQuery(chartOptions);
-        const queryresult = await fetchChartData( query, source,  chartStrategy);
+        const queryresult = await this.dataService.fetchChartData( query, source,  chartStrategy);
         const x = chartOptions[0].split("/").pop();
         const y = chartOptions[1].split("/").pop();
-        const id = cards ? JSON.parse(localStorage.getItem("cards")).length : 0;
+        const id = this.cards ? JSON.parse(localStorage.getItem("cards")).length : 0;
   
         const newCard = { chartType, queryresult, x, y, query, id, source};
   
-        cards.push(newCard)
-        return [...cards];
+        const updatedCards = [...this.cards, newCard];
+        this.cards = updatedCards;
+        this.setCards(updatedCards);
     }
 
-    async editChart({chartOptions, chartStrategy, source, id, cards}){
+    async editChart({chartOptions, chartStrategy, source, id}){
         const chartType = chartStrategy.getChartType();
         let spqb = new SPARQLBuilder();
         const query = spqb.buildQuery(chartOptions);
-        const queryresult = await fetchChartData( query, source,  chartStrategy);
+        const queryresult = await this.dataService.fetchChartData( query, source,  chartStrategy);
         const x = chartOptions[0].split("/").pop();
         const y = chartOptions[1].split("/").pop();
         const editedCard = {chartType, queryresult, x, y, query, id, source};
   
         if(~id){
-          const updatedCards = [...cards];
+          const updatedCards = [...this.cards];
           updatedCards[id] = editedCard;
-          return updatedCards;
+          this.setCards(updatedCards);
         }
     }
 
-    async editChartWithQuery({newQuery, id, cards}){
-        const updatedCards = [...cards];
+    async editChartWithQuery({newQuery, id}){
+        const updatedCards = [...this.cards];
         const chartStrategy = chartStrategies[updatedCards[id].chartType];
-        const queryresult = await fetchChartData( newQuery, updatedCards[id].source,  chartStrategy);
+        const queryresult = await this.dataService.fetchChartData( newQuery, updatedCards[id].source,  chartStrategy);
         updatedCards[id].query = newQuery;
         updatedCards[id].queryresult = queryresult;
-        return updatedCards;
+        this.setCards(updatedCards);
     }
 
-    deleteChart({id, cards}){
+    deleteChart({id}){
         if(id!=null){
-          const updatedCards = [...cards];
+          const updatedCards = [...this.cards];
           for (let i = id; i < updatedCards.length - 1; i++){
             updatedCards[i + 1].id = i;
             updatedCards[i] = updatedCards[i + 1];
           }
           updatedCards.pop();
-          return updatedCards;
+          this.setCards(updatedCards);
+        }
+    }
+
+    importDashboard(file){
+        const reader = new FileReader();
+        reader.onload = function(e){
+            const content = e.target.result;
+            if (typeof content === 'string') {
+                localStorage.setItem("cards", content);
+                location.reload();
+            }
+        }
+        reader.readAsText(file[0]);
+    }
+
+    exportDashboardAsFile() {
+        try {
+            const file = new Blob([localStorage.getItem('cards')], {type: 'application/json'});
+            const blobUrl = URL.createObjectURL(file);
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = 'cards.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            return true;
+        } catch(error){
+            return false;
+        }
+    }
+
+    exportDashboardAsLink() {
+        const data = window.btoa(JSON.stringify(localStorage.getItem('cards')));
+        let url = window.location.href + "?data=" + data;
+        if(url.length > 2048){
+            return false;
+        } else {
+            navigator.clipboard.writeText(url);
+            return true;
         }
     }
 }

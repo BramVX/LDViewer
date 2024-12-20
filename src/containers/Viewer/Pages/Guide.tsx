@@ -3,7 +3,6 @@ import React from "react";
 import DatasetIcon from '@mui/icons-material/Dataset';
 import Grid from '@mui/material/Grid2';
 import CustomModal from "../components/Modal/CustomModal";
-import { fetchChartData } from "../Data/DataService";
 import SPARQLBuilder from "../Data/SPARQLBuilder";
 import CardWithChart from "../components/CardWithChart";
 import chartStrategies from "../ChartTypes/ChartStrategies";
@@ -15,51 +14,15 @@ import EditQueryImage from "../../../config/assets/EditQueryImage.png";
 import ExportImage from "../../../config/assets/ExportImage.png";
 import ImportImage from "../../../config/assets/ImportImage.png";
 import CardWithText from "../components/CardWithText";
+import DashboardService from "../Data/DashboardService";
+import ContentContainer from "../components/ContentContainer";
 
 const Welcome = ({dataset}) => {
-    const [card, setCard] = React.useState(null);
-
-    async function AddChartToDashboard({chartOptions, chartStrategy, source}){
-        const chartType = chartStrategy.getChartType();
-        let sparqlBuilder = new SPARQLBuilder();
-        const query = sparqlBuilder.buildQuery(chartOptions);
-        const queryresult = await fetchChartData( query, source,  chartStrategy);
-        const x = chartOptions[0].split("/").pop();
-        const y = chartOptions[1].split("/").pop();
-        const id = 0;
-  
-        const newCard = { chartType, queryresult, x, y, query, id, source};
-  
-        setCard(newCard);
-    }
-
-    async function EditChartInDashboard({chartOptions, chartStrategy, source, id}){
-        const chartType = chartStrategy.getChartType();
-        let spqb = new SPARQLBuilder();
-        const query = spqb.buildQuery(chartOptions);
-        const queryresult = await fetchChartData( query, source,  chartStrategy);
-        const x = chartOptions[0].split("/").pop();
-        const y = chartOptions[1].split("/").pop();
-        const editedCard = {chartType, queryresult, x, y, query, id, source};
-  
-        setCard(editedCard);
-      }
-  
-      async function EditChartWithQuery({newQuery}){
-        const chartStrategy = chartStrategies[card.chartType];
-        const queryresult = await fetchChartData( newQuery, card.source,  chartStrategy);
-        card.query = newQuery;
-        card.queryresult = queryresult;
-        setCard(card);
-      }
-  
-  
-      const DeleteChartFromDashboard = () => {
-        setCard(null);
-      }
+    const [cards, setCards] = React.useState([]);
+    const dashboardService = new DashboardService(cards, setCards);
 
     return (
-        <>
+        <ContentContainer>
         <Grid container spacing={2}>
         <CardWithText
             title="Linking a dataset to the dashboard"
@@ -72,13 +35,13 @@ const Welcome = ({dataset}) => {
             text="To add a visualization to the dashboard you can click the 'Add visualization' button at the bottom of a 'card'. Once clicked you will see a modal asking you to fill in a type of visualization and the topics you want. Try it out with the dataset linked above. You can fill in name and fare for the topics and choose a BarChart as visualization type."
             image={AddVisualizationImage}
         />
-        {card ? (
-                <CardWithChart dataset={dataset} chartType={card.chartType} chartData={card.queryresult} x={card.x} y={card.y} query={card.query} onEditChart={EditChartInDashboard} onEditQuery={EditChartWithQuery} onDeleteChart={DeleteChartFromDashboard} id={card.id}/>
+        {cards[0] ? (
+                <CardWithChart dataset={dataset} chartType={cards[0].chartType} chartData={cards[0].queryresult} x={cards[0].x} y={cards[0].y} query={cards[0].query} onEditChart={dashboardService.editChart} onEditQuery={dashboardService.editChartWithQuery} onDeleteChart={dashboardService.deleteChart} id={cards[0].id}/>
         ) : (
         <Card variant="outlined">
           <CardContent>
             <Typography variant="h4"></Typography>
-            <CustomModal dataset={dataset} onUpdate={AddChartToDashboard} id={null}></CustomModal>
+            <CustomModal dataset={dataset} onUpdate={dashboardService.addChart} id={null}></CustomModal>
           </CardContent>
         </Card>
         )}
@@ -108,7 +71,7 @@ const Welcome = ({dataset}) => {
             image={ImportImage}
         />
         </Grid>
-        </>
+        </ContentContainer>
     );
 }
 

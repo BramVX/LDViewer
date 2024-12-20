@@ -11,12 +11,13 @@ class BarChartStrategy implements ChartStrategy {
     }
 
     formatData(bindings) {
+        console.log(bindings[0]);
         const formattedData = []
         for (const [ key, value ] of bindings) {
             if(formattedData.length <= 0){
                 formattedData.push([key[0].value, value[0].value])
             }
-            formattedData.push([key[1].value, parseInt(value[1].value)])
+            formattedData.push([key[1].value, parseFloat(value[1].value)])
         }
         return formattedData;
     }

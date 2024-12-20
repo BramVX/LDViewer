@@ -1,9 +1,9 @@
-import { executeQuery } from "#containers/Viewer/Data/DataService.tsx";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormLabel, InputLabel, MenuItem, Modal, Select, TextField, Typography } from "@mui/material";
 import React, { createElement, useEffect, useImperativeHandle, useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
 import ChartOptions from "./ChartOptions";
 import chartStrategies from "#containers/Viewer/ChartTypes/ChartStrategies.tsx";
+import DataService from "#containers/Viewer/Data/DataService.tsx";
 
 
 const style = {
@@ -19,6 +19,7 @@ const style = {
 };
 
 const CustomModal = ({dataset, onUpdate, id}) => {
+  const dataService = new DataService();
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -29,10 +30,10 @@ const CustomModal = ({dataset, onUpdate, id}) => {
     const [chartOptions, setChartOptions] = useState([]);
 
     useEffect(() => {
-      if(dataset){
-        handleSourceChange({target: {value: dataset}});
+      if(source){
+        handleSourceChange({target: {value: source}});
       }
-    }, []);
+    }, [source]);
 
     function handleSourceChange(e) {
       var query = `SELECT DISTINCT ?predicate {
@@ -40,12 +41,13 @@ const CustomModal = ({dataset, onUpdate, id}) => {
         ORDER BY ?predicate`;
       var endpoint = e.target.value;
     
-      executeQuery(query, endpoint)
+      dataService.executeQuery(query, endpoint)
       .then((result) => {
         fillMenu(result);
         setColor("success");
         setSource(endpoint);
       }).catch((error) => {
+        console.log(error);
         setColor("warning");
       });
 
@@ -60,6 +62,8 @@ const CustomModal = ({dataset, onUpdate, id}) => {
 
         setPredicates(predicateList);
       }
+
+      setSource(e.target.value);
     }
 
     const handleOptionsChange = (options) => {
@@ -118,7 +122,7 @@ const CustomModal = ({dataset, onUpdate, id}) => {
                       variant="filled" 
                       onChange={handleSourceChange} 
                       color={color} 
-                      value={dataset}
+                      value={source}
                       helperText={color === "warning" ? "The dataset is not reachable" : ""}
                       required
                       autoFocus

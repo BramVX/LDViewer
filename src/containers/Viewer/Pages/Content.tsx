@@ -3,6 +3,8 @@ import DDashboard from './DynamicDashboard.tsx';
 import CDemo from '../ContentDemo.tsx';
 import { useEffect, useState } from 'react';
 import Welcome from './Guide.tsx';
+import ContentContainer from '../components/ContentContainer.tsx';
+import DashboardToolbar from '../components/DashboardToolbar.tsx';
 
 function PageContent({ pathname }: Readonly<{ pathname: string }>) {
     const storedCards = JSON.parse(localStorage.getItem("cards"));
@@ -29,15 +31,20 @@ function PageContent({ pathname }: Readonly<{ pathname: string }>) {
         localStorage.setItem("cards", JSON.stringify(cards))
     }, [cards])
 
+    //let content;
     switch(pathname) {
         case "/guide":
             return(<Welcome dataset={dataset}/>);
+            break;
         case "/dashboard":
             return(<DDashboard dataset={dataset} cards={cards} setCards={setCards}/>);
+            break;
         case "/contentdemo":
-            return(<CDemo/>)
+            return(<CDemo/>);
+            break;
         case "/ldwizard":
             window.location.href = window.location.href.split("/")[0] + "/1";
+            break;
         default:
             break;
     };

@@ -8,8 +8,6 @@ const ChartOptions = ({chartType, predicates, onOptionsChange}) => {
         return <div></div>;
     }
 
-    console.log(chartStrategy);
-
     const chartOptions = chartStrategy.getDataOptions();
     const [options, setOptions] = useState(() => chartOptions.map(() => ""));
 
@@ -18,9 +16,12 @@ const ChartOptions = ({chartType, predicates, onOptionsChange}) => {
             const newOptions = [...prevOptions];
             newOptions[index] = event.target.value;
             onOptionsChange(newOptions);
+            console.log("new options:",newOptions);
             return newOptions;
         });
     };
+
+    
 
     return(
         <div>
