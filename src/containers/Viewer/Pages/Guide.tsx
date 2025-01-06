@@ -6,7 +6,7 @@ import CustomModal from "../components/Modal/CustomModal";
 import SPARQLBuilder from "../Data/SPARQLBuilder";
 import CardWithChart from "../components/CardWithChart";
 import chartStrategies from "../ChartTypes/ChartStrategies";
-import LinkDataSetImage from "../../../config/assets/LinkDataSetImage.png";
+import LinkDataSetImage from "../../../config/assets/LinkDatasetImage.png";
 import AddVisualizationImage from "../../../config/assets/AddVisualizationImage.png";
 import DeleteVisualizationImage from "../../../config/assets/DeleteVisualizationImage.png";
 import EditVisualizationImage from "../../../config/assets/EditVisualizationImage.png";
