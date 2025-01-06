@@ -1,12 +1,16 @@
 import * as React from 'react';
 import DDashboard from './DynamicDashboard.tsx';
-import CDemo from './ContentDemo.tsx';
+import CDemo from '../ContentDemo.tsx';
 import { useEffect, useState } from 'react';
+import Welcome from './Guide.tsx';
+import ContentContainer from '../components/ContentContainer.tsx';
+import DashboardToolbar from '../components/DashboardToolbar.tsx';
 
-export default function PageContent({ pathname }: { pathname: string }) {
-    console.log(localStorage.getItem("cards"));
+function PageContent({ pathname }: Readonly<{ pathname: string }>) {
     const storedCards = JSON.parse(localStorage.getItem("cards"));
     const [cards, setCards] = useState(storedCards);
+    const dataset = localStorage.getItem("dataset");
+    console.log(dataset);
 
     const getDataFromUrl = () => { 
         const queryParameters = new URLSearchParams(window.location.search);
@@ -25,22 +29,25 @@ export default function PageContent({ pathname }: { pathname: string }) {
 
     useEffect(() => {
         localStorage.setItem("cards", JSON.stringify(cards))
-        console.log("localstorage updated!");
-        console.log(JSON.parse(localStorage.getItem("cards")))
     }, [cards])
 
+    //let content;
     switch(pathname) {
-        /*
-        case "/demo":
-            return(<Demo />);
-            */
+        case "/guide":
+            return(<Welcome dataset={dataset}/>);
+            break;
         case "/dashboard":
-            return(<DDashboard cards={cards} setCards={setCards}/>);
+            return(<DDashboard dataset={dataset} cards={cards} setCards={setCards}/>);
+            break;
         case "/contentdemo":
-            return(<CDemo/>)
+            return(<CDemo/>);
+            break;
         case "/ldwizard":
             window.location.href = window.location.href.split("/")[0] + "/1";
+            break;
         default:
             break;
     };
 }
+
+export default PageContent;

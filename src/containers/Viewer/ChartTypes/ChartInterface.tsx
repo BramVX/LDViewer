@@ -6,7 +6,5 @@ interface ChartStrategy {
     getDataOptions(): string[]
 
     formatData(bindings): any;
-
-    buildQuery(values) : string;
 }
 
