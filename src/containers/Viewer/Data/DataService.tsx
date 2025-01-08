@@ -48,6 +48,7 @@ class DataService{
                 }
             ]}
         );
+        console.log("hallo!?!?", result);
         if (result.resultType === "bindings") {
             const bindingsStream = await result.execute();
             const bindings = await bindingsStream.toArray();
