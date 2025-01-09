@@ -20,11 +20,9 @@ const DashboardToolbar = ({ dashboardService }) => {
         setTooltip("Checking dataset...");
         const isReachable = await dashboardService.dataService.checkDataset(dataset);
         if (isReachable) {
-            console.log("Dataset is reachable2");
             setColor("success");
             setTooltip(`${dataset} is linked.`);
         } else {
-            console.log("Dataset is not reachable2");
             setColor("error");
             setTooltip("Dataset is not reachable.");
         }

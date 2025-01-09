@@ -3,8 +3,6 @@ import DDashboard from './DynamicDashboard.tsx';
 import CDemo from '../ContentDemo.tsx';
 import { useEffect, useState } from 'react';
 import Welcome from './Guide.tsx';
-import ContentContainer from '../components/ContentContainer.tsx';
-import DashboardToolbar from '../components/DashboardToolbar.tsx';
 
 function PageContent({ pathname }: Readonly<{ pathname: string }>) {
     const storedCards = JSON.parse(localStorage.getItem("cards"));
