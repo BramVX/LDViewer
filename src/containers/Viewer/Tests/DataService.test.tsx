@@ -70,10 +70,9 @@ describe('DataService - executeQuery', () => {
             }),
         });
     
-        const result = dataService.executeQuery(query, source);
+        const result = await dataService.executeQuery(query, source);
 
         expect(QueryEngine).toHaveBeenCalled();
         expect(result).toEqual(mockResult.values);
     });
-    
 });
