@@ -6,17 +6,26 @@ class DashboardService  {
     private cards: any;
     private setCards: Function;
     private dataService: any;
+    public dataset: String;
 
     constructor(cards, setCards, dataService = new DataService()) {
         this.cards = cards;
         this.setCards = setCards;
         this.dataService = dataService;
     }
-    
+
+    setDataset(dataset){
+        this.dataset = dataset;
+    }
+
+    getDataset(){
+        return this.dataset;
+    }
     
     async addChart({chartOptions, chartStrategy, source}){
         const chartType = chartStrategy.getChartType();
         let sparqlBuilder = new SPARQLBuilder();
+        console.log("INFO", sparqlBuilder, chartOptions, source, chartStrategy, chartType);
         const query = sparqlBuilder.buildQuery(chartOptions);
         const queryresult = await this.dataService.fetchChartData( query, source,  chartStrategy);
         const x = chartOptions[0].split("/").pop();
@@ -28,6 +37,9 @@ class DashboardService  {
         const updatedCards = [...this.cards, newCard];
         this.cards = updatedCards;
         this.setCards(updatedCards);
+
+        console.log("cards", this.cards);
+        console.log("updatedCards", updatedCards);
     }
 
     async editChart({chartOptions, chartStrategy, source, id}){

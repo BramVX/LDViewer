@@ -3,12 +3,11 @@ import DDashboard from './DynamicDashboard.tsx';
 import CDemo from '../ContentDemo.tsx';
 import { useEffect, useState } from 'react';
 import Welcome from './Guide.tsx';
+import DashboardService from '../Data/DashboardService.tsx';
 
 function PageContent({ pathname }: Readonly<{ pathname: string }>) {
     const storedCards = JSON.parse(localStorage.getItem("cards"));
     const [cards, setCards] = useState(storedCards);
-    const dataset = localStorage.getItem("dataset");
-    console.log(dataset);
 
     const getDataFromUrl = () => { 
         const queryParameters = new URLSearchParams(window.location.search);
@@ -32,10 +31,10 @@ function PageContent({ pathname }: Readonly<{ pathname: string }>) {
     //let content;
     switch(pathname) {
         case "/guide":
-            return(<Welcome dataset={dataset}/>);
+            return(<Welcome/>);
             break;
         case "/dashboard":
-            return(<DDashboard dataset={dataset} cards={cards} setCards={setCards}/>);
+            return(<DDashboard cards={cards} setCards={setCards}/>);
             break;
         case "/contentdemo":
             return(<CDemo/>);
