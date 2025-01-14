@@ -44,6 +44,7 @@ const CardWithChart: React.FC<CardWithChartProps> = ({dataset, chartType, chartD
   let adapter;
 
   if(chartType === "GeoChart") {
+    console.log("chartData for a map", chartData);
     adapter = new LeafletAdapter(chartData);
   } else{
     adapter = new GoogleChartsAdapter(chartData, {chartType: chartType});

@@ -1,43 +1,65 @@
 import SPARQLBuilder from './SPARQLBuilder';
 import chartStrategies from '../ChartTypes/ChartStrategies';
 import DataService from './DataService';
+import pako from 'pako';
 
 class DashboardService  {
     private cards: any;
     private setCards: Function;
     private dataService: any;
+    public dataset: String;
 
     constructor(cards, setCards, dataService = new DataService()) {
         this.cards = cards;
         this.setCards = setCards;
         this.dataService = dataService;
     }
-    
+
+    setDataset(dataset){
+        this.dataset = dataset;
+    }
+
+    getDataset(){
+        return this.dataset;
+    }
     
     async addChart({chartOptions, chartStrategy, source}){
         const chartType = chartStrategy.getChartType();
-        let sparqlBuilder = new SPARQLBuilder();
-        const query = sparqlBuilder.buildQuery(chartOptions);
+        const query = chartStrategy.buildQuery(chartOptions);
         const queryresult = await this.dataService.fetchChartData( query, source,  chartStrategy);
-        const x = chartOptions[0].split("/").pop();
-        const y = chartOptions[1].split("/").pop();
+        console.log("queryresult", queryresult);
+        console.log("chartoptions", chartOptions);
+        const subject1 = chartOptions[0][0].split("/").pop();
+        const subject2 = chartOptions[1]?.[0]?.split("/").pop() || null;
+        const subject3 = chartOptions[2]?.[0]?.split("/").pop() || null;
+        const subject4 = chartOptions[3]?.[0]?.split("/").pop() || null;
+
         const id = this.cards ? JSON.parse(localStorage.getItem("cards")).length : 0;
+
+        console.log(chartType, queryresult, subject1, subject2, subject3, subject4, query, id, source);
   
-        const newCard = { chartType, queryresult, x, y, query, id, source};
+        const newCard = { chartType, queryresult, subject1, subject2, subject3, subject4, query, id, source};
+
+        console.log(...this.cards);
   
         const updatedCards = [...this.cards, newCard];
         this.cards = updatedCards;
         this.setCards(updatedCards);
+
+        console.log("cards", this.cards);
+        console.log("updatedCards", updatedCards);
     }
 
     async editChart({chartOptions, chartStrategy, source, id}){
         const chartType = chartStrategy.getChartType();
-        let sparqlBuilder = new SPARQLBuilder();
-        const query = sparqlBuilder.buildQuery(chartOptions);
+        const query = chartStrategy.buildQuery(chartOptions);
+        console.log("query", query);
         const queryresult = await this.dataService.fetchChartData( query, source,  chartStrategy);
-        const x = chartOptions[0].split("/").pop();
-        const y = chartOptions[1].split("/").pop();
-        const editedCard = {chartType, queryresult, x, y, query, id, source};
+        const subject1 = chartOptions[0][0].split("/").pop();
+        const subject2 = chartOptions[1]?.[0]?.split("/").pop() || null;
+        const subject3 = chartOptions[2]?.[0]?.split("/").pop() || null;
+        const subject4 = chartOptions[3]?.[0]?.split("/").pop() || null;
+        const editedCard = { chartType, queryresult, subject1, subject2, subject3, subject4, query, id, source};
   
         if(~id){
           const updatedCards = [...this.cards];
@@ -92,17 +114,6 @@ class DashboardService  {
             return true;
         } catch(error){
             return false;
-        }
-    }
-
-    exportDashboardAsLink() {
-        const data = window.btoa(JSON.stringify(localStorage.getItem('cards')));
-        let url = window.location.href + "?data=" + data;
-        if(url.length > 2048){
-            return false;
-        } else {
-            navigator.clipboard.writeText(url);
-            return true;
         }
     }
 }

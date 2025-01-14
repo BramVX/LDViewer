@@ -1,6 +1,8 @@
 
 class SPARQLBuilder {
     buildQuery(values: any) : String{
+        console.log("this", this);
+
         values = values.filter(function (e) {
             return e; 
         });

@@ -6,24 +6,7 @@ import Welcome from './Guide.tsx';
 
 function PageContent({ pathname }: Readonly<{ pathname: string }>) {
     const storedCards = JSON.parse(localStorage.getItem("cards"));
-    const [cards, setCards] = useState(storedCards);
-    const dataset = localStorage.getItem("dataset");
-    console.log(dataset);
-
-    const getDataFromUrl = () => { 
-        const queryParameters = new URLSearchParams(window.location.search);
-        let data = queryParameters.get("data");
-
-        if(data){
-            data = window.atob(data);
-            localStorage.setItem("cards", data);
-            location.reload();
-        }
-    };
-
-    useEffect(() => {
-        getDataFromUrl();
-    }, []);
+    const [cards, setCards] = storedCards ? useState(storedCards) : useState([]);
 
     useEffect(() => {
         localStorage.setItem("cards", JSON.stringify(cards))
@@ -32,10 +15,10 @@ function PageContent({ pathname }: Readonly<{ pathname: string }>) {
     //let content;
     switch(pathname) {
         case "/guide":
-            return(<Welcome dataset={dataset}/>);
+            return(<Welcome/>);
             break;
         case "/dashboard":
-            return(<DDashboard dataset={dataset} cards={cards} setCards={setCards}/>);
+            return(<DDashboard cards={cards} setCards={setCards}/>);
             break;
         case "/contentdemo":
             return(<CDemo/>);
