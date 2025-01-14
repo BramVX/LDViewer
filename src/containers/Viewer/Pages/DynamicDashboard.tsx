@@ -28,7 +28,6 @@ const DynamicDashboard = ({ cards, setCards }) => {
 
   React.useEffect(() => {
     console.log(cards);
-    console.log;
     localStorage.setItem("cards", JSON.stringify(cards));
   }, [cards]);
 

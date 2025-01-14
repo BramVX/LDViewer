@@ -14,7 +14,7 @@ const ChartOptions = ({ chartType, predicates, onOptionsChange }) => {
   const handleChange = (index) => (event) => {
     setOptions((prevOptions) => {
       const newOptions = [...prevOptions];
-      newOptions[index] = event.target.value;
+      newOptions[index] = JSON.parse(event.target.value);
       onOptionsChange(newOptions);
       console.log("new options:", newOptions);
       return newOptions;
@@ -23,19 +23,20 @@ const ChartOptions = ({ chartType, predicates, onOptionsChange }) => {
 
   return (
     <div>
+      <p>{chartStrategy.chartOptionsWarning()}</p>
       {chartOptions.map((option, index) => (
         <FormControl sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id={option}>{option}</InputLabel>
+          <InputLabel id={option}>Subject</InputLabel>
           <Select
             id={option}
             onChange={handleChange(index)}
-            value={options[index]}
+            value={JSON.stringify(options[index])}
             label={option}
             required={index === 0}
             fullWidth
           >
             {predicates.map((predicate) => (
-              <MenuItem key={predicate.value} value={predicate.value}>
+              <MenuItem key={predicate.value} value={JSON.stringify([predicate.value, predicate.datatype])}>
                 {predicate.label}
               </MenuItem>
             ))}

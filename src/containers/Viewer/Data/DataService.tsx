@@ -1,5 +1,6 @@
 import { QueryEngine } from "@comunica/query-sparql";
 import React from "react";
+import ChartStrategy from "../ChartTypes/ChartInterface";
 
 interface QueryProps {
     query: string;

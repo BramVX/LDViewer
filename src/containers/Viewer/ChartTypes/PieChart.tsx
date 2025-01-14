@@ -1,25 +1,108 @@
-class PieChartStrategy implements ChartStrategy {
-    chartType: string = "PieChart";
-    dataOptions: string[] = ["text", "numeric"];
+import ChartStrategy from "./ChartInterface";
 
-    getChartType(): string {
-        return this.chartType;
+class PieChartStrategy extends ChartStrategy {
+  chartType: string = "PieChart";
+  dataOptions: string[] = ["text", "numeric"];
+
+  getChartType(): string {
+    return this.chartType;
+  }
+
+  getDataOptions(): string[] {
+    return this.dataOptions;
+  }
+
+  formatData(bindings: any) {
+    const formattedData = [];
+    for (const [key, value] of bindings) {
+      if (formattedData.length <= 0) {
+        formattedData.push([key[0].value, value[0].value]);
+      }
+      formattedData.push([key[1].value, parseFloat(value[1].value)]);
     }
+    return formattedData;
+  }
 
-    getDataOptions(): string[] {
-        return this.dataOptions;
-    }
+  checkChartOptions(chartOptions: any): boolean {
+    console.log("chartOptions", chartOptions);
 
-    formatData(bindings: any) {
-        const formattedData = [];
-        for (const [ key, value ] of bindings) {
-            if(formattedData.length <= 0){
-                formattedData.push([key[0].value, value[0].value])
-            }
-            formattedData.push([key[1].value, parseFloat(value[1].value)])
+    const firstDatatype = chartOptions[0][1].split("#")[1];
+    const secondDatatype = chartOptions[1][1];
+
+    //Chartoption 1 is of any value but numeric
+    if (
+      firstDatatype !== "integer" &&
+      firstDatatype !== "decimal" &&
+      firstDatatype !== "float" &&
+      firstDatatype !== "double"
+    ) {
+      console.log("First option is not numeric");
+      console.log("firstDatatype", firstDatatype);
+
+      if (secondDatatype == null) {
+        true;
+      } else {
+        if (
+          secondDatatype.split("#")[1] == "integer" ||
+          secondDatatype.split("#")[1] == "decimal" ||
+          secondDatatype.split("#")[1] == "float" ||
+          secondDatatype.split("#")[1] == "double" ||
+          secondDatatype.split("#")[1] == "nonNegativeInteger" 
+        ) {
+          return true;
+        } else {
+          return false;
         }
-        return formattedData;
+      }
+
+      return true;
     }
+
+    return false;
+  }
+
+  chartOptionsWarning(): string {
+    return "To create a piechart you either have only the first option which contains a textual value or also add a second value which must be a numeric value";
+  }
+
+  buildQuery(values: any): string {
+    let query = "";
+
+    if (values[1]) {
+      query = super.buildQuery(values);
+    } else {
+      let firstValue = values[0][0];
+      let selectObject;
+      let whereObject;
+
+      if (firstValue.includes("#")) {
+        const split = firstValue.split("#");
+        const prefix = split[0] + "#";
+
+        selectObject = `?${split[1]}`;
+        whereObject = `pre:${split[1]} ?${split[1]};`;
+
+        query += `
+                PREFIX pre:<${prefix}> 
+                `;
+      } else {
+        selectObject = `?${firstValue.split("/").pop()}`;
+        whereObject = `<${firstValue}> ?${firstValue.split("/").pop()};`;
+      }
+      query +=
+        "SELECT " + selectObject + " (COUNT(" + selectObject + ") AS ?count) ";
+      query += `
+            WHERE {
+                ?o ${whereObject}
+            }
+            group by ${selectObject}
+            limit  1000
+            `;
+      console.log("was made with the one value");
+    }
+    console.log("query", query);
+    return query;
+  }
 }
 
 export default PieChartStrategy;

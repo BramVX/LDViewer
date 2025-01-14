@@ -31,7 +31,10 @@ const CustomModal = ({ dataset, onUpdate, id }) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [chartType, setChartType] = useState("");
+  const cards =  localStorage.getItem("cards");
+  console.log(cards);
+  const parsedCards = cards ? JSON.parse(cards) : null;
+  const [chartType, setChartType] = useState(parsedCards && parsedCards[id] ? parsedCards[id].chartType : "");
   const [source, setSource] = useState(dataset);
   const [color, setColor] = useState<
     "success" | "warning" | "error" | "primary" | "secondary" | "info"
@@ -46,9 +49,12 @@ const CustomModal = ({ dataset, onUpdate, id }) => {
   }, [source]);
 
   function handleSourceChange(e) {
-    var query = `SELECT DISTINCT ?predicate {
-        ?s ?predicate ?o}
-        ORDER BY ?predicate`;
+    var query = `    SELECT DISTINCT ?predicate (DATATYPE(?o) AS ?datatype) {
+        ?s ?predicate ?o
+        FILTER(isLiteral(?o))  # Focus on literals to get datatypes
+    }
+    ORDER BY ?predicate ?datatype
+`;
     var endpoint = e.target.value;
 
     dataService
@@ -69,8 +75,11 @@ const CustomModal = ({ dataset, onUpdate, id }) => {
       menuItems.forEach((binding) => {
         const value = binding.get("predicate").value;
         const label = value.split("/").pop();
-        predicateList.push({ value, label });
+        const datatype = binding.get("datatype").value;
+        predicateList.push({ value, label, datatype });
       });
+
+      console.log("predicates", predicateList);
 
       setPredicates(predicateList);
     }
@@ -80,6 +89,7 @@ const CustomModal = ({ dataset, onUpdate, id }) => {
 
   const handleOptionsChange = (options) => {
     setChartOptions(options);
+    console.log("options", options);
   };
 
   const handleChartTypeChange = (chartType) => {
@@ -90,10 +100,15 @@ const CustomModal = ({ dataset, onUpdate, id }) => {
     console.log("submitting");
     event.preventDefault();
     const chartStrategy = chooseStrategy(chartType);
-    if (id == null) {
-      onUpdate({ chartOptions, chartStrategy, source });
+
+    if (chartStrategy.checkChartOptions(chartOptions)) {
+      if (id == null) {
+        onUpdate({ chartOptions, chartStrategy, source });
+      } else {
+        onUpdate({ chartOptions, chartStrategy, source, id });
+      }
     } else {
-      onUpdate({ chartOptions, chartStrategy, source, id });
+      alert(chartStrategy.chartOptionsWarning());
     }
   }
 
@@ -126,7 +141,7 @@ const CustomModal = ({ dataset, onUpdate, id }) => {
       >
         <DialogContent>
           <DialogTitle id="modal-modal-title">
-            Add chart to dashboard
+            {id != null ? "Edit visualization" : "Add new visualization"}
           </DialogTitle>
           <DialogContentText>
             Fill in the dataset SPARQL endpoint here if its not prefilled. A
