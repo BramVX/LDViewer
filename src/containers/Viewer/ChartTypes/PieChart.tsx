@@ -1,3 +1,4 @@
+import { NumericDataTypes } from "../Data/DatatypeEnum";
 import ChartStrategy from "./ChartInterface";
 
 class PieChartStrategy extends ChartStrategy {
@@ -31,33 +32,20 @@ class PieChartStrategy extends ChartStrategy {
 
     //Chartoption 1 is of any value but numeric
     if (
-      firstDatatype !== "integer" &&
-      firstDatatype !== "decimal" &&
-      firstDatatype !== "float" &&
-      firstDatatype !== "double"
+      !Object.values(NumericDataTypes).includes(firstDatatype.toLowerCase())
     ) {
-      console.log("First option is not numeric");
-      console.log("firstDatatype", firstDatatype);
-
       if (secondDatatype == null) {
-        true;
+        return true;
       } else {
         if (
-          secondDatatype.split("#")[1] == "integer" ||
-          secondDatatype.split("#")[1] == "decimal" ||
-          secondDatatype.split("#")[1] == "float" ||
-          secondDatatype.split("#")[1] == "double" ||
-          secondDatatype.split("#")[1] == "nonNegativeInteger" 
+          Object.values(NumericDataTypes).includes(
+            secondDatatype.split("#")[1].toLowerCase()
+          )
         ) {
           return true;
-        } else {
-          return false;
         }
       }
-
-      return true;
     }
-
     return false;
   }
 

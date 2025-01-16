@@ -23,12 +23,10 @@ class DashboardService  {
         return this.dataset;
     }
     
-    async addChart({chartOptions, chartStrategy, source}){
+    async addChart({title, chartOptions, chartStrategy, source}){
         const chartType = chartStrategy.getChartType();
         const query = chartStrategy.buildQuery(chartOptions);
         const queryresult = await this.dataService.fetchChartData( query, source,  chartStrategy);
-        console.log("queryresult", queryresult);
-        console.log("chartoptions", chartOptions);
         const subject1 = chartOptions[0][0].split("/").pop();
         const subject2 = chartOptions[1]?.[0]?.split("/").pop() || null;
         const subject3 = chartOptions[2]?.[0]?.split("/").pop() || null;
@@ -38,7 +36,7 @@ class DashboardService  {
 
         console.log(chartType, queryresult, subject1, subject2, subject3, subject4, query, id, source);
   
-        const newCard = { chartType, queryresult, subject1, subject2, subject3, subject4, query, id, source};
+        const newCard = { title, chartType, queryresult, subject1, subject2, subject3, subject4, query, id, source};
 
         console.log(...this.cards);
   
@@ -50,7 +48,7 @@ class DashboardService  {
         console.log("updatedCards", updatedCards);
     }
 
-    async editChart({chartOptions, chartStrategy, source, id}){
+    async editChart({title, chartOptions, chartStrategy, source, id}){
         const chartType = chartStrategy.getChartType();
         const query = chartStrategy.buildQuery(chartOptions);
         console.log("query", query);
@@ -59,7 +57,7 @@ class DashboardService  {
         const subject2 = chartOptions[1]?.[0]?.split("/").pop() || null;
         const subject3 = chartOptions[2]?.[0]?.split("/").pop() || null;
         const subject4 = chartOptions[3]?.[0]?.split("/").pop() || null;
-        const editedCard = { chartType, queryresult, subject1, subject2, subject3, subject4, query, id, source};
+        const editedCard = { title, chartType, queryresult, subject1, subject2, subject3, subject4, query, id, source};
   
         if(~id){
           const updatedCards = [...this.cards];

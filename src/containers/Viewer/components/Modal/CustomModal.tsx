@@ -1,24 +1,17 @@
 import {
-  Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  FormControl,
-  FormLabel,
   InputLabel,
   MenuItem,
-  Modal,
   Select,
   TextField,
-  Typography,
 } from "@mui/material";
 import React, {
-  createElement,
   useEffect,
-  useImperativeHandle,
   useState,
 } from "react";
 import AddIcon from "@mui/icons-material/Add";
@@ -31,16 +24,20 @@ const CustomModal = ({ dataset, onUpdate, id }) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  
+  const [source, setSource] = useState(dataset);
   const cards =  localStorage.getItem("cards");
-  console.log(cards);
   const parsedCards = cards ? JSON.parse(cards) : null;
   const [chartType, setChartType] = useState(parsedCards && parsedCards[id] ? parsedCards[id].chartType : "");
-  const [source, setSource] = useState(dataset);
   const [color, setColor] = useState<
     "success" | "warning" | "error" | "primary" | "secondary" | "info"
   >("primary");
   const [predicates, setPredicates] = useState([]);
-  const [chartOptions, setChartOptions] = useState([]);
+
+  const [formData, setFormData] = useState({
+    title: parsedCards && parsedCards[id] ? parsedCards[id].title : "",
+    chartOptions: parsedCards && parsedCards[id] ? parsedCards[id].chartOptions : [],
+  });
 
   useEffect(() => {
     if (source) {
@@ -88,8 +85,11 @@ const CustomModal = ({ dataset, onUpdate, id }) => {
   }
 
   const handleOptionsChange = (options) => {
-    setChartOptions(options);
-    console.log("options", options);
+    setFormData((prev) => ({ ...prev, chartOptions: options }));
+  };
+
+  const handleTitleChange = (e) => {
+    setFormData((prev) => ({ ...prev, title: e.target.value }));
   };
 
   const handleChartTypeChange = (chartType) => {
@@ -97,15 +97,16 @@ const CustomModal = ({ dataset, onUpdate, id }) => {
   };
 
   function handleSubmit(event) {
-    console.log("submitting");
     event.preventDefault();
     const chartStrategy = chooseStrategy(chartType);
 
-    if (chartStrategy.checkChartOptions(chartOptions)) {
+    if (chartStrategy.checkChartOptions(formData.chartOptions)) {
+      const title = formData.title;
+      const chartOptions = formData.chartOptions;
       if (id == null) {
-        onUpdate({ chartOptions, chartStrategy, source });
+        onUpdate({ title, chartOptions, chartStrategy, source });
       } else {
-        onUpdate({ chartOptions, chartStrategy, source, id });
+        onUpdate({ title, chartOptions, chartStrategy, source, id });
       }
     } else {
       alert(chartStrategy.chartOptionsWarning());
@@ -159,6 +160,16 @@ const CustomModal = ({ dataset, onUpdate, id }) => {
             }
             required
             autoFocus
+            fullWidth
+          />
+          <InputLabel id="chartTitle">Title</InputLabel>
+          <TextField
+            id="filled-required"
+            label="Title"
+            variant="filled"
+            value={formData.title}
+            onChange={handleTitleChange}
+            required
             fullWidth
           />
           <InputLabel id="chartType">Chart type</InputLabel>
