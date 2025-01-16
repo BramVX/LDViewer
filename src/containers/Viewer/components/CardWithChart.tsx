@@ -16,6 +16,7 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import Visualization from "./Visualization";
 import LeafletAdapter from "../Visualization/LeafletAdapter";
 import GoogleChartsAdapter from "../Visualization/GoogleChartsAdapter";
+import PopupModal from "./Modal/CustomVisualizationModal";
 
 function a11yProps(index: number) {
   return {
@@ -61,7 +62,6 @@ const CardWithChart: React.FC<CardWithChartProps> = ({
   let adapter;
 
   if (chartType === "GeoChart") {
-    console.log("chartData for a map", chartData);
     adapter = new LeafletAdapter(chartData);
   } else {
     adapter = new GoogleChartsAdapter(chartData, { chartType: chartType });
@@ -82,9 +82,12 @@ const CardWithChart: React.FC<CardWithChartProps> = ({
               <Tab label="Query" {...a11yProps(1)} />
             </Tabs>
           </Box>
-          <CustomTabPanel value={value} index={0}>
-            <Visualization adapter={adapter} />
-          </CustomTabPanel>
+          <div style={{ position: "relative" }}>
+            <CustomTabPanel value={value} index={0}>
+              <PopupModal adapter={adapter} />
+              <Visualization adapter={adapter} />
+            </CustomTabPanel>
+          </div>
           <CustomTabPanel value={value} index={1}>
             <QueryField query={query} onSubmit={handleQuerySubmit} />
           </CustomTabPanel>
