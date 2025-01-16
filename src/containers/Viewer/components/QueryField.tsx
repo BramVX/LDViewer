@@ -2,8 +2,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField/TextField";
 import React, { useState } from "react";
 
-function QueryField({query, onSubmit}) {
-
+function QueryField({ query, onSubmit }) {
   const [currentQuery, setCurrentQuery] = useState(query);
 
   const handleChange = (event) => {
@@ -11,11 +10,10 @@ function QueryField({query, onSubmit}) {
   };
 
   const handleSubmit = () => {
-    onSubmit(currentQuery); 
+    onSubmit(currentQuery);
   };
-  
 
-  return(
+  return (
     <div>
       <TextField
         id="outlined-multiline-static"
@@ -23,7 +21,7 @@ function QueryField({query, onSubmit}) {
         multiline
         value={currentQuery}
         onChange={handleChange}
-        style={{width:"100%"}}
+        style={{ width: "100%" }}
       />
       <Button variant="contained" color="primary" onClick={handleSubmit}>
         Submit Query
