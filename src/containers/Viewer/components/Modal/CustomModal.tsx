@@ -34,10 +34,15 @@ const CustomModal = ({ dataset, onUpdate, id }) => {
   >("primary");
   const [predicates, setPredicates] = useState([]);
 
+  const subjects = parsedCards && parsedCards[id] ? [parsedCards[id].subject1, parsedCards[id].subject2, parsedCards[id].subject3, parsedCards[id].subject4] : [];
+
   const [formData, setFormData] = useState({
     title: parsedCards && parsedCards[id] ? parsedCards[id].title : "",
-    chartOptions: parsedCards && parsedCards[id] ? parsedCards[id].chartOptions : [],
+    chartOptions: subjects,
   });
+
+  console.log("EXISTING TITLE", formData.title);
+  console.log("EXISTING CHARTOPTIONS", formData.chartOptions);
 
   useEffect(() => {
     if (source) {
@@ -108,6 +113,7 @@ const CustomModal = ({ dataset, onUpdate, id }) => {
       } else {
         onUpdate({ title, chartOptions, chartStrategy, source, id });
       }
+      handleClose();
     } else {
       alert(chartStrategy.chartOptionsWarning());
     }
@@ -137,7 +143,7 @@ const CustomModal = ({ dataset, onUpdate, id }) => {
         aria-describedby="modal-modal-description"
         PaperProps={{
           component: "form",
-          onSubmit: handleSubmit,
+          onSubmit: handleSubmit, 
         }}
       >
         <DialogContent>
@@ -190,10 +196,11 @@ const CustomModal = ({ dataset, onUpdate, id }) => {
             chartType={chartType}
             predicates={predicates}
             onOptionsChange={handleOptionsChange}
+            oldOptions={formData.chartOptions}
           ></ChartOptions>
         </DialogContent>
         <DialogActions>
-          <Button type="submit">Add</Button>
+          <Button type="submit">{id != null ? "Edit" : "Add"}</Button>
         </DialogActions>
       </Dialog>
     </div>
