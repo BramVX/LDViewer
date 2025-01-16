@@ -1,3 +1,4 @@
+import { GeoDataTypes } from "../Data/DatatypeEnum";
 import ChartStrategy from "./ChartInterface";
 
 class GeoChartStrategy extends ChartStrategy {
@@ -25,22 +26,18 @@ class GeoChartStrategy extends ChartStrategy {
 
     for (const [geo, optional1, optional2, optional3] of bindings) {
       if (formattedData.length <= 0) {
-        formattedData.push([
-          "lat",
-          "long",
-          optional1[0].value,
-          optional2[0].value,
-          optional3[0].value,
-        ]);
+        const subjects = ["lat", "long"];
+        if (optional1) subjects.push(optional1[0].value);
+        if (optional2) subjects.push(optional2[0].value);
+        if (optional3) subjects.push(optional3[0].value);
+        formattedData.push(subjects);
       }
       const match = geo[1].value.match(pattern);
-      formattedData.push([
-        match[1],
-        match[2],
-        optional1[1].value,
-        optional2[1].value,
-        optional3[1].value,
-      ]);
+      const values = [match[1], match[2]];
+      if (optional1) values.push(optional1[1].value);
+      if (optional2) values.push(optional2[1].value);
+      if (optional3) values.push(optional3[1].value);
+      formattedData.push(values);
     }
     return formattedData;
 
@@ -54,9 +51,10 @@ class GeoChartStrategy extends ChartStrategy {
     console.log(chartOptions[0][1]);
 
     if (
-      chartOptions[0][1].split("/").pop().substring(0, 3) == "geo" ||
-      firstDatatype == "point" ||
-      firstDatatype == "lat_long"
+      Object.values(GeoDataTypes).includes(firstDatatype.toLowerCase()) ||
+      Object.values(GeoDataTypes).includes(
+        chartOptions[0][1].split("/").pop().substring(0, 3).toLowerCase()
+      )
     ) {
       return true;
     }

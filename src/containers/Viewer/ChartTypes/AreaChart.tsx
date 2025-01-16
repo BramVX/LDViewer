@@ -1,3 +1,4 @@
+import { NumericDataTypes, TimeDataTypes } from "../Data/DatatypeEnum";
 import ChartStrategy from "./ChartInterface";
 
 class AreaChartStrategy extends ChartStrategy {
@@ -32,7 +33,12 @@ class AreaChartStrategy extends ChartStrategy {
     const secondDatatype = chartOptions[1][1].split("#")[1];
     const thirdDatatype = chartOptions[2][1].split("#")[1];
 
-    if (firstDatatype == "xsd:gYear" || firstDatatype == "xsd:integer") {
+    if(Object.values(TimeDataTypes).includes(firstDatatype.toLowerCase())){
+      if(Object.values(NumericDataTypes).includes(secondDatatype.toLowerCase())){
+        if(Object.values(NumericDataTypes).includes(thirdDatatype.toLowerCase())){
+          return true;
+        }
+      }
       return true;
     }
     return false;

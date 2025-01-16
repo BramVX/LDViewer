@@ -1,3 +1,4 @@
+import { NumericDataTypes } from "../Data/DatatypeEnum";
 import ChartStrategy from "./ChartInterface";
 
 class BarChartStrategy extends ChartStrategy {
@@ -31,31 +32,15 @@ class BarChartStrategy extends ChartStrategy {
     const secondDatatype = chartOptions[1][1];
 
     // Chartoption 1 is of any value but numeric
-    if (
-      firstDatatype !== "xsd:integer" &&
-      firstDatatype !== "xsd:decimal" &&
-      firstDatatype !== "xsd:float" &&
-      firstDatatype !== "xsd:double"
-    ) {
+    if (!Object.values(NumericDataTypes).includes(firstDatatype.toLowerCase())) {
       if (secondDatatype == null) {
-        false;
+        return false;
       } else {
-        if (
-          secondDatatype.split("#")[1] == "integer" ||
-          secondDatatype.split("#")[1] == "decimal" ||
-          secondDatatype.split("#")[1] == "float" ||
-          secondDatatype.split("#")[1] == "double" ||
-          secondDatatype.split("#")[1] == "nonNegativeInteger"
-        ) {
+        if (Object.values(NumericDataTypes).includes(secondDatatype.split("#")[1].toLowerCase())) {
           return true;
-        } else {
-          return false;
-        }
+        } 
       }
-
-      return true;
     }
-
     return false;
   }
 

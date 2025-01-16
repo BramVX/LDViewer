@@ -31,17 +31,19 @@ const DynamicDashboard = ({ cards, setCards }) => {
     localStorage.setItem("cards", JSON.stringify(cards));
   }, [cards]);
 
-  async function AddChartToDashboard({ chartOptions, chartStrategy, source }) {
-    await dashboardService.addChart({ chartOptions, chartStrategy, source });
+  async function AddChartToDashboard({ title, chartOptions, chartStrategy, source }) {
+    await dashboardService.addChart({ title, chartOptions, chartStrategy, source });
   }
 
   async function EditChartInDashboard({
+    title,
     chartOptions,
     chartStrategy,
     source,
     id,
   }) {
     await dashboardService.editChart({
+      title,
       chartOptions,
       chartStrategy,
       source,
@@ -91,8 +93,7 @@ const DynamicDashboard = ({ cards, setCards }) => {
                   dataset={items.source}
                   chartType={items.chartType}
                   chartData={items.queryresult}
-                  x={items.x}
-                  y={items.y}
+                  title={items.title}
                   query={items.query}
                   onEditChart={EditChartInDashboard}
                   onEditQuery={EditChartWithQuery}

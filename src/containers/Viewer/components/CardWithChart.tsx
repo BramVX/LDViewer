@@ -21,8 +21,7 @@ interface CardWithChartProps {
   dataset: string;
   chartType: any;
   chartData: any;
-  x: string;
-  y: string;
+  title: string;
   query: string;
   onEditChart: any;
   onEditQuery: any;
@@ -30,7 +29,7 @@ interface CardWithChartProps {
   id: number;
 }
 
-const CardWithChart: React.FC<CardWithChartProps> = ({dataset, chartType, chartData, x, y, query, onEditChart, onEditQuery , onDeleteChart, id}) => {
+const CardWithChart: React.FC<CardWithChartProps> = ({dataset, chartType, chartData, title, query, onEditChart, onEditQuery , onDeleteChart, id}) => {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -54,7 +53,7 @@ const CardWithChart: React.FC<CardWithChartProps> = ({dataset, chartType, chartD
     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <Card variant="outlined">
           <CardContent>
-            <Typography variant="h4">{x} per {y}</Typography>
+            <Typography variant="h4">{title}</Typography>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                 <Tab label={chartType} {...a11yProps(0)} />
