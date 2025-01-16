@@ -49,8 +49,7 @@ const Welcome = () => {
               dataset={cards[0].source}
               chartType={cards[0].chartType}
               chartData={cards[0].queryresult}
-              x={cards[0].x}
-              y={cards[0].y}
+              title={cards[0].title}
               query={cards[0].query}
               onEditChart={dashboardService.editChart}
               onEditQuery={dashboardService.editChartWithQuery}
