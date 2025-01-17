@@ -1,32 +1,18 @@
 import {
   Alert,
   AlertColor,
-  Box,
   Button,
   Collapse,
   IconButton,
-  Menu,
-  MenuItem,
 } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import CloseIcon from "@mui/icons-material/Close";
 import React from "react";
 
-function DashboardLayoutBasic({ dashboardService }) {
+function DownloadMenu({ dashboardService }) {
   const [active, setActive] = React.useState(false);
   const [severity, setSeverity] = React.useState<AlertColor>("error");
-  const [message, setMessage] = React.useState(
-    "Something went wrong with making the link."
-  );
-
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const [message, setMessage] = React.useState("");
 
   function exportDataAsFile() {
     if (dashboardService.exportDashboardAsFile()) {
@@ -73,4 +59,4 @@ function DashboardLayoutBasic({ dashboardService }) {
   );
 }
 
-export default DashboardLayoutBasic;
+export default DownloadMenu;

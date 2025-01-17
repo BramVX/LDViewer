@@ -1,4 +1,4 @@
-import { Modal, IconButton } from "@mui/material";
+import { Modal, IconButton, Box } from "@mui/material";
 import React from "react";
 import Visualization from "../Visualization";
 import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
@@ -31,7 +31,9 @@ const PopupModal = ({ adapter }) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Visualization adapter={adapter} />
+        <Box sx={style}>
+          <Visualization adapter={adapter} />
+        </Box>
       </Modal>
     </div>
   );

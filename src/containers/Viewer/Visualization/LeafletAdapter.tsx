@@ -15,8 +15,6 @@ class LeafletAdapter implements VisualizationAdapter {
     this.valueNames = data[0];
     this.data = data.slice(1);
     this.options = options || { center: [51.836169, 5.857853], zoom: 12 };
-    //create center based on given data
-    console.log("data", data);
   }
 
   calculateBounds() {

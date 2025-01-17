@@ -27,15 +27,14 @@ const DynamicDashboard = ({ cards, setCards }) => {
   };
 
   React.useEffect(() => {
-    console.log(cards);
     localStorage.setItem("cards", JSON.stringify(cards));
   }, [cards]);
 
-  async function AddChartToDashboard({ title, chartOptions, chartStrategy, source }) {
+  async function addChartToDashboard({ title, chartOptions, chartStrategy, source }) {
     await dashboardService.addChart({ title, chartOptions, chartStrategy, source });
   }
 
-  async function EditChartInDashboard({
+  async function editChartInDashboard({
     title,
     chartOptions,
     chartStrategy,
@@ -51,15 +50,13 @@ const DynamicDashboard = ({ cards, setCards }) => {
     });
   }
 
-  async function EditChartWithQuery({ newQuery, id }) {
+  async function editChartWithQuery({ newQuery, id }) {
     await dashboardService.editChartWithQuery({ newQuery, id });
   }
 
-  const DeleteChartFromDashboard = (id: number) => {
+  const deleteChartFromDashboard = (id: number) => {
     dashboardService.deleteChart({ id });
   };
-
-  console.log("right before custommodal", dashboardService);
 
   const AddButton = () => {
     return (
@@ -69,7 +66,7 @@ const DynamicDashboard = ({ cards, setCards }) => {
             <Typography variant="h4"></Typography>
             <CustomModal
               dataset={dataset}
-              onUpdate={AddChartToDashboard}
+              onUpdate={addChartToDashboard}
               id={null}
             ></CustomModal>
           </CardContent>
@@ -95,9 +92,9 @@ const DynamicDashboard = ({ cards, setCards }) => {
                   chartData={items.queryresult}
                   title={items.title}
                   query={items.query}
-                  onEditChart={EditChartInDashboard}
-                  onEditQuery={EditChartWithQuery}
-                  onDeleteChart={DeleteChartFromDashboard}
+                  onEditChart={editChartInDashboard}
+                  onEditQuery={editChartWithQuery}
+                  onDeleteChart={deleteChartFromDashboard}
                   id={items.id}
                 />
               );

@@ -10,10 +10,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import React, {
-  useEffect,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import ChartOptions from "./ChartOptions";
 import chartStrategies from "#containers/Viewer/ChartTypes/ChartStrategies.tsx";
@@ -24,25 +21,32 @@ const CustomModal = ({ dataset, onUpdate, id }) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  
+
   const [source, setSource] = useState(dataset);
-  const cards =  localStorage.getItem("cards");
+  const cards = localStorage.getItem("cards");
   const parsedCards = cards ? JSON.parse(cards) : null;
-  const [chartType, setChartType] = useState(parsedCards && parsedCards[id] ? parsedCards[id].chartType : "");
+  const [chartType, setChartType] = useState(
+    parsedCards && parsedCards[id] ? parsedCards[id].chartType : ""
+  );
   const [color, setColor] = useState<
     "success" | "warning" | "error" | "primary" | "secondary" | "info"
   >("primary");
   const [predicates, setPredicates] = useState([]);
 
-  const subjects = parsedCards && parsedCards[id] ? [parsedCards[id].subject1, parsedCards[id].subject2, parsedCards[id].subject3, parsedCards[id].subject4] : [];
+  const subjects =
+    parsedCards && parsedCards[id]
+      ? [
+          parsedCards[id].subject1,
+          parsedCards[id].subject2,
+          parsedCards[id].subject3,
+          parsedCards[id].subject4,
+        ]
+      : [];
 
   const [formData, setFormData] = useState({
     title: parsedCards && parsedCards[id] ? parsedCards[id].title : "",
     chartOptions: subjects,
   });
-
-  console.log("EXISTING TITLE", formData.title);
-  console.log("EXISTING CHARTOPTIONS", formData.chartOptions);
 
   useEffect(() => {
     if (source) {
@@ -54,9 +58,9 @@ const CustomModal = ({ dataset, onUpdate, id }) => {
     var query = `    SELECT DISTINCT ?predicate (DATATYPE(?o) AS ?datatype) {
         ?s ?predicate ?o
         FILTER(isLiteral(?o))  # Focus on literals to get datatypes
-    }
-    ORDER BY ?predicate ?datatype
-`;
+        }
+        ORDER BY ?predicate ?datatype
+      `;
     var endpoint = e.target.value;
 
     dataService
@@ -80,8 +84,6 @@ const CustomModal = ({ dataset, onUpdate, id }) => {
         const datatype = binding.get("datatype").value;
         predicateList.push({ value, label, datatype });
       });
-
-      console.log("predicates", predicateList);
 
       setPredicates(predicateList);
     }
@@ -143,7 +145,7 @@ const CustomModal = ({ dataset, onUpdate, id }) => {
         aria-describedby="modal-modal-description"
         PaperProps={{
           component: "form",
-          onSubmit: handleSubmit, 
+          onSubmit: handleSubmit,
         }}
       >
         <DialogContent>

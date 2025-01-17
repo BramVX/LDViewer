@@ -40,9 +40,6 @@ class GeoChartStrategy extends ChartStrategy {
       formattedData.push(values);
     }
     return formattedData;
-
-    //bind( replace( str(?point), "^[^0-9\\.-]*([-]?[0-9\\.]+) .*$", "$1" ) as ?long )
-    //bind( replace( str(?point), "^.* ([-]?[0-9\\.]+)[^0-9\\.]*$", "$1" ) as ?lat )
   }
 
   checkChartOptions(chartOptions: any): boolean {
@@ -67,7 +64,6 @@ class GeoChartStrategy extends ChartStrategy {
 
   buildQuery(values: any): string {
     return super.buildQuery(values);
-    //OPTIONAL { ?o <https://schema.org/familyName> ?familyName. }
   }
 }
 
