@@ -14,7 +14,7 @@ class GoogleChartsAdapter implements VisualizationAdapter {
   render() {
     return (
       <Chart
-        chartType={this.options.chartType || "BarChart"}
+        chartType={this.options.chartType}
         data={this.data}
         options={this.options}
         legendToggle

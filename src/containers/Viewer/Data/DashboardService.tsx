@@ -33,25 +33,17 @@ class DashboardService  {
         const subject4 = chartOptions[3]?.[0]?.split("/").pop() || null;
 
         const id = this.cards ? JSON.parse(localStorage.getItem("cards")).length : 0;
-
-        console.log(chartType, queryresult, subject1, subject2, subject3, subject4, query, id, source);
   
         const newCard = { title, chartType, queryresult, subject1, subject2, subject3, subject4, query, id, source};
-
-        console.log(...this.cards);
   
         const updatedCards = [...this.cards, newCard];
         this.cards = updatedCards;
         this.setCards(updatedCards);
-
-        console.log("cards", this.cards);
-        console.log("updatedCards", updatedCards);
     }
 
     async editChart({title, chartOptions, chartStrategy, source, id}){
         const chartType = chartStrategy.getChartType();
         const query = chartStrategy.buildQuery(chartOptions);
-        console.log("query", query);
         const queryresult = await this.dataService.fetchChartData( query, source,  chartStrategy);
         const subject1 = chartOptions[0][0].split("/").pop();
         const subject2 = chartOptions[1]?.[0]?.split("/").pop() || null;
