@@ -21,6 +21,7 @@ class GeoChartStrategy extends ChartStrategy {
   formatData(bindings) {
     const formattedData = [];
     const pattern = /Point \(([-+]?\d*\.?\d+) ([-+]?\d*\.?\d+)\)/;
+    const altPattern = /POINT\(([-+]?\d*\.?\d+) ([-+]?\d*\.?\d+)\)/;
 
     console.log(bindings);
 
@@ -32,7 +33,10 @@ class GeoChartStrategy extends ChartStrategy {
         if (optional3) subjects.push(optional3[0].value);
         formattedData.push(subjects);
       }
-      const match = geo[1].value.match(pattern);
+      let match = geo[1].value.match(pattern);
+      if (!match) {
+        match = geo[1].value.match(altPattern);
+      }
       const values = [match[1], match[2]];
       if (optional1) values.push(optional1[1].value);
       if (optional2) values.push(optional2[1].value);
@@ -46,6 +50,7 @@ class GeoChartStrategy extends ChartStrategy {
     const firstDatatype = chartOptions[0][1].split("#")[1];
 
     console.log(chartOptions[0][1]);
+    console.log(firstDatatype);
 
     if (
       Object.values(GeoDataTypes).includes(firstDatatype.toLowerCase()) ||

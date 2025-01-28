@@ -12,6 +12,7 @@ export enum TextualDataTypes {
 }
 
 export enum GeoDataTypes {
+  string = "string",
   geo = "geo",
   point = "point",
   lat_long = "lat_long",
